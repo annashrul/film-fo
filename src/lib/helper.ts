@@ -7,7 +7,7 @@ import nookies from 'nookies';
 import Api from 'lib/httpService';
 
 const isEmpty = (val: any) => {
-  if (val === undefined || val === null || val === '') {
+  if (val === undefined || val === null || val === '' || val.trim() === '') {
     return false;
   }
   return true;

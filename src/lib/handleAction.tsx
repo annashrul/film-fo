@@ -5,19 +5,17 @@ import helper from './helper';
 
 const strNetworkError = 'terjadi kesalahan pada jaringan';
 const strServerError = 'terjadi kesalahan pada server';
-const interval = 800;
 
 export const loading = (isStatus = true, title = 'Silahkan tunggu.') => {
-  Swal.fire({
-    allowOutsideClick: false,
-    title: title,
-    html: '',
-    onBeforeOpen: () => {
-      Swal.showLoading();
-    },
-    onClose: () => {},
-  });
-  if (!isStatus) Swal.close();
+  if (isStatus) {
+    Swal.fire({
+      allowOutsideClick: false,
+      title: title,
+      didOpen: () => Swal.showLoading(),
+    });
+  } else {
+    Swal.close();
+  }
 };
 
 export const handleError = (err: any) => {
@@ -55,15 +53,13 @@ export const handlePost = async (
   loading(true);
   try {
     const submitData = await Api.post(url, data);
-    setTimeout(function () {
-      loading(false);
-      const datum = submitData.data;
-      if (datum.status === 'success') {
-        callback(datum, false, 'Berhasil memproses permintaan.');
-      } else {
-        callback(datum, true, 'gagal memproses permintaan.');
-      }
-    }, interval);
+    const datum = submitData.data;
+    if (datum.status === 'success') {
+      callback(datum, true, datum.msg);
+    } else {
+      callback(datum, false, datum.msg);
+    }
+    loading(false);
   } catch (err: any) {
     loading(false);
     handleError(err);
@@ -77,15 +73,13 @@ export const handlePut = async (
   loading(true);
   try {
     const submitData = await Api.put(url, data);
-    setTimeout(function () {
-      loading(false);
-      const datum = submitData.data;
-      if (datum.status === 'success') {
-        callback(datum, false, 'Berhasil memproses permintaan.');
-      } else {
-        callback(datum, true, 'gagal memproses permintaan.');
-      }
-    }, interval);
+    const datum = submitData.data;
+    if (datum.status === 'success') {
+      callback(datum, true, datum.msg);
+    } else {
+      callback(datum, false, datum.msg);
+    }
+    loading(false);
   } catch (err: any) {
     loading(false);
     handleError(err);
@@ -96,16 +90,14 @@ export const handleDelete = async (url: string, callback: () => void) => {
   loading(true);
   try {
     const submitData = await Api.delete(url);
-    setTimeout(function () {
-      loading(false);
-      const datum = submitData.data;
-      if (datum.status === 'success') {
-        helper.mySwal(datum.msg);
-        callback();
-      } else {
-        helper.mySwal(datum.msg);
-      }
-    }, interval);
+    const datum = submitData.data;
+    if (datum.status === 'success') {
+      helper.mySwal(datum.msg);
+      callback();
+    } else {
+      helper.mySwal(datum.msg);
+    }
+    loading(false);
   } catch (err) {
     loading(false);
     handleError(err);

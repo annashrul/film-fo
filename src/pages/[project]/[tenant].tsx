@@ -1,12 +1,12 @@
 import { NextPageContext } from 'next';
 import React, { useState } from 'react';
-import { Button, Drawer, message, Steps } from 'antd';
-import ButtonFE from 'components/Common/ButtonFE';
+import { Button, message, Steps } from 'antd';
 import helper from 'lib/helper';
-import WrapperAuth from 'components/Common/WrapperAuth';
-import { handlePost } from 'lib/handleAction';
+import { handleGet, handlePost } from 'lib/handleAction';
 import httpService from 'lib/httpService';
-import { iUser } from 'lib/interface';
+import { iTenant, iUser } from 'lib/interface';
+import nookies from 'nookies';
+import 'antd/dist/antd.css';
 
 const widgetHeader = (title = 'selamat datang di', desc = 'smkn1 bandung') => {
   return (
@@ -45,21 +45,17 @@ const widgetFirst = (label: string, value: string, onChange: (e: any) => void) =
 
 const { Step } = Steps;
 const steps = [
-  {
-    content: widgetHeader('Selamat datang di', 'smkn1 bandung'),
-  },
-  {
-    content: 'Second-content',
-  },
-  {
-    content: 'Last-content',
-  },
-  {
-    content: 'Last-content',
-  },
+  { content: '' },
+  { content: 'Second-content' },
+  { content: 'Last-content' },
+  { content: 'Last-content' },
 ];
 
-const Dashboard: React.FC = () => {
+interface iGetTenant {
+  response: iTenant;
+}
+
+const Tenant: React.FC<iGetTenant> = ({ response }) => {
   const [isShowDrawer, setIsShowDrawer] = useState<boolean>(false);
   const [current, setCurrent] = React.useState(0);
   const [ticketCode, setTicketCode] = React.useState('');
@@ -98,7 +94,7 @@ const Dashboard: React.FC = () => {
   const handleSubmit = () => {
     handlePost(httpService.apiClient + 'auth/tiket', { ticket: 'SD123AS' }, (res, status, msg) => {
       if (status) {
-        setUser(res);
+        setUser(res.result);
         setTicketCode(ticketCode);
         message.success(msg);
         setTimeout(() => setCurrent(current + 1), 300);
@@ -141,7 +137,7 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen flex justify-center bg-gray-200 py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover relative items-center">
       <div className="absolute bg-black opacity-60 inset-0" />
       <div className="flex flex-col max-w-lg w-full z-10">
-        <Steps current={current} type="navigation">
+        <Steps current={current}>
           {steps.map((item, key) => (
             <Step key={key} />
           ))}
@@ -155,24 +151,24 @@ const Dashboard: React.FC = () => {
           <div className="bg-white rounded-xl space-y-8 p-10 mt-5">
             {current === 0 && (
               <>
-                {widgetHeader('Selamat datang di', 'smkn 1 bandung')}{' '}
+                {widgetHeader('Selamat datang di', response.title)}
                 {widgetFirst('masukan kode tiket anda', ticketCode, (res) => setTicketCode(res))}
               </>
             )}
             {current === 1 && (
               <>
-                {widgetHeader('konfirmasi data diri', 'smkn 1 bandung')} {widgetTwo()}
+                {widgetHeader('konfirmasi data diri', response.title)} {widgetTwo()}
               </>
             )}
             {current === 2 && (
               <>
-                {widgetHeader('konfirmasi data diri', 'smkn 1 bandung')}{' '}
+                {widgetHeader('konfirmasi data diri', response.title)}
                 {widgetFirst('masukan no telepon anda', noHandphone, (res) => setNoHandphone(res))}
               </>
             )}
             {current === 3 && (
               <>
-                {widgetHeader('konfirmasi kode otp', 'smkn 1 bandung')}{' '}
+                {widgetHeader('konfirmasi kode otp', response.title)}
                 {widgetFirst('masukan kode tiket anda', '', (res) => setOtp(res))}
               </>
             )}
@@ -203,7 +199,19 @@ const Dashboard: React.FC = () => {
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  return { props: {} };
+  let response: any = [];
+  try {
+    const getDetail = await httpService.get(httpService.apiUrl + `tenant/get/${ctx.query.tenant}`);
+    if (getDetail.status === 200) {
+      response = getDetail.data.result;
+    } else {
+      response = [];
+    }
+  } catch (err) {}
+
+  return {
+    props: { response },
+  };
 }
 
-export default Dashboard;
+export default Tenant;

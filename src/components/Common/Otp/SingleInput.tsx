@@ -1,8 +1,8 @@
-import React, { memo, useRef, useEffect } from 'react';
+import React, { memo, useRef, useEffect, useLayoutEffect } from 'react';
 import usePrevious from '../../../lib/usePrevious';
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-export interface SingleOTPInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface SingleOTPInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   focus?: boolean;
   secure?: boolean;
 }
@@ -11,13 +11,13 @@ export function SingleOTPInputComponent(props: SingleOTPInputProps) {
   const { focus, autoFocus, secure, ...rest } = props;
   const inputRef = useRef<HTMLInputElement>(null);
   const prevFocus = usePrevious(!!focus);
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (inputRef.current) {
       if (focus && autoFocus) {
         inputRef.current.focus();
       }
       if (secure) {
-        inputRef.current.type="password"
+        inputRef.current.type = 'password';
       }
       if (focus && autoFocus && focus !== prevFocus) {
         inputRef.current.focus();
