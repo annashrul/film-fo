@@ -2,6 +2,8 @@ import NProgress from 'nprogress'; //nprogress module
 import Api from 'lib/httpService';
 import Swal from 'sweetalert2';
 import helper from './helper';
+import { Button, message, Steps } from 'antd';
+import 'antd/dist/antd.css';
 
 const strNetworkError = 'terjadi kesalahan pada jaringan';
 const strServerError = 'terjadi kesalahan pada server';
@@ -20,13 +22,13 @@ export const loading = (isStatus = true, title = 'Silahkan tunggu.') => {
 
 export const handleError = (err: any) => {
   if (err.message === 'Network Error') {
-    helper.mySwal(strNetworkError);
+    message.error(strNetworkError);
   } else {
     if (err.response !== undefined) {
       if (err.response.data.msg !== undefined) {
-        helper.mySwal(err.response.data.msg);
+        message.error(err.response.data.msg);
       } else {
-        helper.mySwal(strServerError);
+        message.error(strServerError);
       }
     }
   }
@@ -50,7 +52,9 @@ export const handlePost = async (
   data: any,
   callback: (datum: any, isStatus: boolean, msg: string) => void,
 ) => {
-  loading(true);
+  message.loading('Tunggu sebentar..');
+
+  // loading(true);
   try {
     const submitData = await Api.post(url, data);
     const datum = submitData.data;
@@ -59,8 +63,10 @@ export const handlePost = async (
     } else {
       callback(datum, false, datum.msg);
     }
+    message.destroy();
     loading(false);
   } catch (err: any) {
+    message.destroy();
     loading(false);
     handleError(err);
   }
