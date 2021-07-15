@@ -141,3 +141,21 @@ ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-icon {
   --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
+
+.answer-selected {
+  border-radius: 1rem !important;
+  --tw-text-opacity: 1;
+  color: rgba(5, 122, 85, var(--tw-text-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgba(188, 240, 218, var(--tw-bg-opacity));
+  --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.answer-not-selected {
+  border-radius: 1rem !important;
+  color: rgba(159, 88, 10, 1) !important;
+  background: rgba(252, 233, 106, 1) !important;
+  border-color: rgba(252, 233, 106, 1) !important;
+  --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-export const widgetHeader = (title = 'selamat datang di', desc = 'smkn1 bandung') => {
+export const widgetHeader = (title = 'selamat datang di', desc = '') => {
   return (
     <div className="text-center">
       <div className="flex items-center justify-center">
@@ -7,7 +7,14 @@ export const widgetHeader = (title = 'selamat datang di', desc = 'smkn1 bandung'
         <span className="text-gray-500 font-normal">{title}</span>
         <span className="h-px w-16 bg-gray-300" />
       </div>
-      <h2 className="text-3xl text-gray-900">{desc}</h2>
+      <div className="flex items-center justify-center">
+        <img
+          className="h-8 mr-3 text-center"
+          src="https://rekreartive.com/wp-content/uploads/2019/04/Logo-Tut-Wuri-Handayani-PNG-Warna.png"
+        />
+      </div>
+
+      <h2 className="text-2xl text-gray-900">{desc}</h2>
     </div>
   );
 };

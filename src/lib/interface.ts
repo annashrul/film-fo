@@ -36,3 +36,18 @@ export interface iTenant {
   created_at: string;
   updated_at: string;
 }
+
+export interface iQuiz {
+  totalrecords: string;
+  id: string;
+  slug_project: string;
+  id_project: string;
+  question: string;
+  choise: [
+    {
+      id: string;
+      answer: string;
+      is_right: string;
+    },
+  ];
+}

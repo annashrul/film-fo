@@ -1,11 +1,12 @@
 import { NextPageContext } from 'next';
 import React, { useState, useEffect } from 'react';
-
+import { useRouter } from 'next/router';
 import helper from 'lib/helper';
 import { handlePost } from 'lib/handleAction';
 import httpService from 'lib/httpService';
 import { iTenant, iUser } from 'lib/interface';
 import { widgetFirst, widgetHeader, widgetTwo } from 'components/tenant/tenantCommon';
+import Sess from 'lib/auth';
 import { Button, message, Steps } from 'antd';
 import 'antd/dist/antd.css';
 import OTPInput from 'components/Common/Otp';
@@ -17,12 +18,14 @@ const steps = [
   { content: 'Last-content' },
 ];
 
-interface iGetTenant {
+interface iAuth {
   response: iTenant;
 }
 
-const Tenant: React.FC<iGetTenant> = ({ response }) => {
-  const [resOtp, setResOtp] = useState({ otp: '' });
+const Auth: React.FC<iAuth> = ({ response }) => {
+  const router = useRouter();
+
+  const [resOtp, setResOtp] = useState({ otp: '', transaction_token: '' });
   const [current, setCurrent] = React.useState(0);
   const [ticketCode, setTicketCode] = React.useState('');
   const [noHandphone, setNoHandphone] = React.useState('');
@@ -92,19 +95,40 @@ const Tenant: React.FC<iGetTenant> = ({ response }) => {
   const handleSubmitPhone = (type = 'send') => {
     handlePost(httpService.apiClient + 'auth/otp', { nomor: noHandphone, ticket: user?.ticket }, (res, status, msg) => {
       if (status) {
-        setResOtp({ otp: res.result.otp_anying });
+        Sess.setToken(res.result.transaction_token);
+        Sess.http.axios.defaults.headers.common['Authorization'] = res.result.transaction_token;
+        setResOtp({ otp: res.result.otp_anying, transaction_token: res.result.transaction_token });
         setStartTimer(false);
         setCounter(180);
         message.success(msg);
-        type === 'send' && setTimeout(() => setCurrent(current + 1), 300);
+        if (type === 'send') {
+          setTimeout(() => setCurrent(current + 1), 300);
+        }
       }
     });
+  };
+
+  const handleSubmitOtp = (otp: any) => {
+    setOtp(otp);
+    if (otp.length === 4) {
+      if (otp !== resOtp.otp) {
+        message.error('otp tidak tidak sesuai');
+        return;
+      }
+      console.log(resOtp);
+      message.success('berhasil');
+
+      router.push({
+        pathname: '/[project]/[tenant]/quiz',
+        query: { project: response.project_slug, tenant: response.slug },
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 flex flex-col justify-center ">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 skew-y-0 sm:-rotate-6 rounded-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:-rotate-6 rounded-3xl"></div>
         <div className="relative px-4 ">
           <div className="max-w-md mx-auto">
             <Steps current={current}>
@@ -151,16 +175,7 @@ const Tenant: React.FC<iGetTenant> = ({ response }) => {
                         length={4}
                         className="my-4	px-auto text-lg flex items-center justify-center "
                         inputClassName="otpInput w-10	h-10 text-white dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray"
-                        onChangeOTP={(otp) => {
-                          setOtp(otp);
-                          if (otp.length === 4) {
-                            if (otp !== resOtp.otp) {
-                              message.error('otp tidak tidak sesuai');
-                              return;
-                            }
-                            message.success('berhasil');
-                          }
-                        }}
+                        onChangeOTP={(otp) => handleSubmitOtp(otp)}
                       />
                     </div>
                     <div className="flex items-center justify-between">
@@ -211,43 +226,26 @@ const Tenant: React.FC<iGetTenant> = ({ response }) => {
       </div>
     </div>
   );
-
-  return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl" />
-      <div className="flex flex-col max-w-lg w-full z-10">
-        <Steps current={current}>
-          {steps.map((item, key) => (
-            <Step key={key} />
-          ))}
-        </Steps>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            next();
-          }}
-        >
-          <div className="bg-white rounded-2xl shadow-md space-y-8 p-10 mt-5"></div>
-        </form>
-      </div>
-    </div>
-  );
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
   let response: any = [];
+
   try {
     const getDetail = await httpService.get(httpService.apiUrl + `tenant/get/${ctx.query.tenant}`);
+    console.log('###################################', getDetail);
     if (getDetail.status === 200) {
       response = getDetail.data.result;
     } else {
       response = [];
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log('###################################', err);
+  }
 
   return {
     props: { response },
   };
 }
 
-export default Tenant;
+export default Auth;

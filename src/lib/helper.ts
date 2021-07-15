@@ -6,6 +6,18 @@ import { NextPageContext } from 'next';
 import nookies from 'nookies';
 import Api from 'lib/httpService';
 
+// https://i.pinimg.com/originals/71/c7/60/71c76025a232b42e8a458ac1656cab65.gif
+
+export const nilaiAkhir = (nilai: number) => {
+  let kkm = 70;
+  if (nilai > kkm) {
+    return true;
+  }
+  if (nilai < kkm) {
+    return false;
+  }
+};
+
 const isEmpty = (val: any) => {
   if (val === undefined || val === null || val === '' || val.trim() === '') {
     return false;
@@ -176,6 +188,7 @@ export const handleRoute = (ctx: NextPageContext) => {
 };
 
 export default {
+  nilaiAkhir,
   isEmpty,
   removeHtml,
   numFormat,
