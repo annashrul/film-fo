@@ -80,15 +80,17 @@ export interface iTenant {
   updated_at: string;
 }
 
-export interface iQuestion{
-  id:string,
-  slug_project:string,
-  id_project:string,
-  question:string,
-  iChoise:[],
-}
-export interface iChoise{
-  id:string,
-  answer_right:string,
-  is_right:string
+export interface iQuiz {
+  totalrecords: string;
+  id: string;
+  slug_project: string;
+  id_project: string;
+  question: string;
+  choise: [
+    {
+      id: string;
+      answer: string;
+      is_right: string;
+    },
+  ];
 }

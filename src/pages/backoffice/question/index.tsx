@@ -3,7 +3,7 @@ import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Api from 'lib/httpService';
 import Helper from 'lib/helper';
-import {iQuestion,iPagin} from 'lib/interface';
+import {iQuiz,iPagin} from 'lib/interface';
 import { Pagination } from '@windmill/react-ui'
 import moment from 'moment'
 import nookies from 'nookies'
@@ -20,7 +20,7 @@ interface iQuestionPage {
 
 
 const QuestionPage: React.FC<iQuestionPage> = (datum) =>{
-    const [datumQuestion,setDatumQuestion]= useState<Array<iQuestion>>([]);
+    const [datumQuestion,setDatumQuestion]= useState<Array<iQuiz>>([]);
     const [arrData, setArrData] = useState<iPagin>();
     const [datefrom,setDatefrom]=useState(moment(new Date()).format("MM/DD/yyyy"));
     const [dateto,setDateto]=useState(moment(new Date()).format("MM/DD/yyyy"));
@@ -114,7 +114,7 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) =>{
                         </thead>
                         <tbody>
                             {
-                            datumQuestion?.length>0?datumQuestion.map((item:iQuestion,i:number)=>{
+                            datumQuestion?.length>0?datumQuestion.map((item:iQuiz,i:number)=>{
                                     return(
                                     <tr className="bg-gray-700 border-b border-gray-600">
                                         <td className="px-4 py-4"><button type="button">ACTION</button></td>
