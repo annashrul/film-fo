@@ -2,30 +2,39 @@ import React, { useState, useEffect                                             
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Api from 'lib/httpService';
-import Helper from 'lib/helper';
+// import Helper from 'lib/helper';
 import {iCategory,iPagin} from 'lib/interface';
 import { Pagination } from '@windmill/react-ui'
 import moment from 'moment'
 import nookies from 'nookies'
 import { NextPageContext } from 'next'
-import { handleGet } from "lib/handleAction";
-import DateRangePicker from 'react-bootstrap-daterangepicker';
+import { handleDelete, handleGet } from "lib/handleAction";
+// import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import httpService from "lib/httpService";
 // import Mutasi from 'components/transaksi/mutasi_row'
-
+import ModalCategory from 'components/Backoffice/Category/modal_category';
+import { DropdownMenu } from "@react-md/menu";
+import {
+    MoreVertSVGIcon,
+    AddCircleOutlineSVGIcon,
+  } from "@react-md/material-icons";
+//   import { useToasts } from 'react-toast-notifications'
+import Swal from "sweetalert2";
 interface iCategoryPage {
     datum: any;
 }
 
 
 const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
+    
+    // const { addToast } = useToasts();
     const [datumCategory,setDatumCategory]= useState<Array<iCategory>>([]);
+    const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [arrData, setArrData] = useState<iPagin>();
-    const [datefrom,setDatefrom]=useState(moment(new Date()).format("MM/DD/yyyy"));
-    const [dateto,setDateto]=useState(moment(new Date()).format("MM/DD/yyyy"));
     const [any,setAny]=useState("");
     const [type,setType]=useState("0");
+    const [categoryData,setCategoryData]=useState({});
     const [hitFirst,setHitFirst]=useState(1);
 
     useEffect(() => {
@@ -50,23 +59,35 @@ const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
     const handleSearch=()=>{
         handleLoadData(`page=1&q=${btoa(any)}&type=${type}`);
     }
+
+    const handleModal=(val:any)=>{
+        setCategoryData(val);
+        setOpenCategoryModal(true);
+    }
+
+    const handleDeleteData= async (id:string) => {
+        Swal.fire({
+            title: 'Yakin menghapus data ini?',
+            showCancelButton: true,
+            confirmButtonText: `Hapus`,
+            cancelButtonText: `Batal`,
+          }).then(async (result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                await handleDelete(Api.apiClient + `category/${id}`, async () => {});
+            } else {
+              Swal.close();
+            }
+          })
+    }
     const handlePage=(pagenum:string)=>{
         if (hitFirst === 0) {
              if (any !== '') {
-                handleLoadData(`page=${pagenum}&q=${btoa(any)}&type=${type}&datefrom=${datefrom}&dateto=${dateto}&perpage=10`);
+                handleLoadData(`page=${pagenum}&q=${btoa(any)}&type=${type}&perpage=10`);
             }
         }
        
     }
-    const handleEvent=(event:any,picker:any)=>{
-        console.log(event);
-        const from = moment(picker.startDate._d).format('YYYY-MM-DD');
-        const to = moment(picker.endDate._d).format('YYYY-MM-DD');
-        setDatefrom(moment(picker.startDate._d).format('MM/DD/yyyy'));
-        setDateto(moment(picker.endDate._d).format('MM/DD/yyyy'));
-        handleLoadData(`page=1&datefrom=${from}&dateto=${to}&perpage=10`);
-    }
-
     return (
         <Layout title="Category">
             <div className="container mt-6 px-2 lg:px-7 mx-auto grid mb-20">
@@ -107,6 +128,12 @@ const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
                                 <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
                             </svg>
                         </button>
+                        <button 
+                            className="px-8 rounded-lg bg-white  text-gray-200 font-bold p-3 mt-1 uppercase border-white border-t border-b border-r"
+                            onClick={(event)=>{event.preventDefault();handleModal({})}}
+                            >
+                                <AddCircleOutlineSVGIcon />
+                        </button>
                     </div>
                 <br/>
                     <div className="w-full overflow-x-auto">
@@ -125,34 +152,17 @@ const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
                                                     {item.type}
                                                     </div>
                                                 </div>
-{/*                                                 
-                                                <div>
-                                                        <div className="dy-dropdown inline-block relative">
-                                                            <button className="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
-                                                            <span className="mr-1">Dropdown</span>
-                                                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /> </svg>
-                                                            </button>
-                                                            <ul className="dy-dropdown-menu absolute hidden text-gray-700 pt-1">
-                                                            <li><a className="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">One</a></li>
-                                                            <li><a className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">Two</a></li>
-                                                            <li><a className="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">Three is the magic number</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div> */}
-                                                <div className="relative inline-flex">
-                                                    <svg className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 412 232"><path d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z" fill="#648299" fillRule="nonzero" /></svg>
-                                                    <select className="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
-                                                        <option>ACTION</option>
-                                                        <option>Red</option>
-                                                        <option>Blue</option>
-                                                        <option>Yellow</option>
-                                                        <option>Black</option>
-                                                        <option>Orange</option>
-                                                        <option>Purple</option>
-                                                        <option>Gray</option>
-                                                        <option>White</option>
-                                                    </select>
-                                                </div>
+                                                    <DropdownMenu
+                                                        id="example-dropdown-menu"
+                                                        items={[
+                                                        { onClick: () => handleDeleteData(item.id), children: "Delete" },
+                                                        { onClick: () => handleModal(item), children: "Edit" },
+                                                        ]}
+                                                        buttonType="icon"
+                                                        aria-label="Options..."
+                                                    >
+                                                        <MoreVertSVGIcon />
+                                                    </DropdownMenu>
                                                 </div>
                                             </div>
                                             </div>
@@ -171,6 +181,7 @@ const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
                     />
                 </div>
             </div>
+            <ModalCategory open={openCategoryModal} closeModal={() => setOpenCategoryModal(false)} data={categoryData} />
         </Layout>
       );
 }

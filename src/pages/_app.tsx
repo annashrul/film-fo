@@ -12,6 +12,7 @@ import LogRocket from 'logrocket';
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import {doLogout} from 'lib/auth'
+import '../styles/style.scss';
 
 
 LogRocket.init('9razfl/prowara');
