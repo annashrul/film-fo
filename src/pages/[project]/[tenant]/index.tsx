@@ -2,7 +2,7 @@ import { NextPageContext } from 'next';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import helper from 'lib/helper';
-import { handlePost } from 'lib/handleAction';
+import { handleGet, handlePost } from 'lib/handleAction';
 import httpService from 'lib/httpService';
 import { iTenant, iUser } from 'lib/interface';
 import { widgetFirst, widgetHeader, widgetTwo } from 'components/tenant/tenantCommon';
@@ -244,8 +244,10 @@ export async function getServerSideProps(ctx: NextPageContext) {
     } else {
       response = [];
     }
-  } catch (err) {}
-  console.log('############### ', response);
+  } catch (err) {
+    console.log('############### ERROR', err);
+  }
+  console.log('############### RESPONSE', response);
 
   return {
     props: { response },

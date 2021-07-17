@@ -1,23 +1,26 @@
 // import jwtDecode from "jwt-decode";
-import http from './httpService';
-import Cookies from 'js-cookie';
-import { iUser } from './interface';
-import Helper from './helper';
+import http from "./httpService";
+import Cookies from "js-cookie";
+import {iUser} from './interface'
+import Helper from "./helper";
 
 // http.setJwt (getJwt());
+
 
 function setUser(datum: iUser) {
   Cookies.set('__uid', btoa(JSON.stringify(datum)), { expires: 7 });
 }
 
 function setToken(datum: string) {
-  Cookies.set('_eduflix', btoa(datum), { expires: 7 });
+  Cookies.set('_prowara', btoa(datum), { expires: 7 });
+
 }
 export function doLogout() {
   Helper.removeCookie('__uid');
-  Helper.removeCookie('_eduflix');
+  Helper.removeCookie('_prowara');
   Helper.removeCookie('_regist');
-  http.axios.defaults.headers.common['Authorization'] = '';
+  http.axios.defaults.headers.common["Authorization"] = '';
+
 }
 
 function getUser() {
@@ -32,7 +35,7 @@ function getUser() {
 }
 
 function getToken() {
-  const coo: string = Cookies.get('_eduflix')!;
+  const coo: string=Cookies.get('_prowara')!;
   return coo;
 }
 
@@ -42,5 +45,5 @@ export default {
   setUser,
   getUser,
   getToken,
-  setToken,
+  setToken
 };

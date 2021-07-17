@@ -1,12 +1,12 @@
 import { NextPageContext } from 'next';
 import React, { useState, useEffect } from 'react';
-import { iQuiz } from 'lib/interface';
+import { iQuestion } from 'lib/interface';
 import { Button } from 'antd';
 import 'antd/dist/antd.css';
-import _ from 'lodash';
 import helper from 'lib/helper';
 import httpService from 'lib/httpService';
 import nookies from 'nookies';
+import { handleGet } from 'lib/handleAction';
 
 export type QuizResponse = {
   data: any;
@@ -15,7 +15,7 @@ export type QuizResponse = {
 const Tenant: React.FC<QuizResponse> = ({ data }) => {
   const [indexQuiz, setIndexQuiz] = useState(0);
   const [selectedQuiz, setSelectedQuiz] = useState(1000);
-  const [dataQuiz, setDataQuiz] = useState<Array<iQuiz>>([]);
+  const [dataQuiz, setDataQuiz] = useState<Array<iQuestion>>([]);
   const [quizChoice, setQuizChoice] = useState([{ question: '', answer: '' }]);
   const [counter, setCounter] = React.useState(0);
   const [startTimer, setStartTimer] = React.useState(false);
@@ -41,36 +41,36 @@ const Tenant: React.FC<QuizResponse> = ({ data }) => {
   const handleChoice = (key: number) => {
     let data = quizChoice;
     let soal = dataQuiz[indexQuiz].question;
-    console.log('jawaban yang benar', dataQuiz[indexQuiz].choise[key].answer);
+    console.log('jawaban yang benar', dataQuiz[indexQuiz].choise[key].answer_right);
     setSelectedQuiz(key);
     if (quizChoice[0].question === '') {
       console.log('ditimpa');
-      setQuizChoice([{ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer }]);
+      setQuizChoice([{ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer_right }]);
       return;
     }
     if (
       soal === quizChoice[indexQuiz]?.question &&
-      quizChoice[indexQuiz]?.answer === dataQuiz[indexQuiz].choise[key].answer
+      quizChoice[indexQuiz]?.answer === dataQuiz[indexQuiz].choise[key].answer_right
     ) {
       console.log('soal dan jawaban sama');
       return;
     } else if (
       soal === quizChoice[indexQuiz]?.question &&
-      quizChoice[indexQuiz]?.answer !== dataQuiz[indexQuiz].choise[key].answer
+      quizChoice[indexQuiz]?.answer !== dataQuiz[indexQuiz].choise[key].answer_right
     ) {
       console.log(
         'soal sama jawaban sebelum = ' +
           quizChoice[indexQuiz].answer +
           ' dan diganti dengan jawaban ' +
-          dataQuiz[indexQuiz].choise[key].answer,
+          dataQuiz[indexQuiz].choise[key].answer_right,
       );
       Object.assign(data[indexQuiz], {
         question: soal ? soal.toString() : '',
-        answer: dataQuiz[indexQuiz].choise[key].answer,
+        answer: dataQuiz[indexQuiz].choise[key].answer_right,
       });
     } else {
       console.log('push array');
-      data.push({ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer });
+      data.push({ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer_right });
     }
 
     setQuizChoice(data);
@@ -129,9 +129,7 @@ const Tenant: React.FC<QuizResponse> = ({ data }) => {
               {dataQuiz ? (
                 dataQuiz.length > 0 ? (
                   <>
-                    {!finish && (
-                      <span className="text-primary-600 text-xs">{_.unescape(dataQuiz[indexQuiz].question)}</span>
-                    )}
+                    {!finish && <span className="text-primary-600 text-xs">{dataQuiz[indexQuiz].question}</span>}
                     {!finish &&
                       dataQuiz[indexQuiz].choise.map((val, key) => {
                         return <>{temp(key, val)}</>;

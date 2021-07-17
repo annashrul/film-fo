@@ -9,6 +9,8 @@
 
 // app.prepare().then(() => {
 //   createServer((req, res) => {
+//     // Be sure to pass `true` as the second argument to `url.parse`.
+//     // This tells it to parse the query portion of the URL.
 //     const parsedUrl = parse(req.url, true)
 //     const { pathname, query } = parsedUrl
 
@@ -24,7 +26,6 @@
 //     console.log('> Ready on http://localhost:3000')
 //   })
 // })
-// const NextRedisCache = require('next-redis-cache');
 
 const cacheableResponse = require('cacheable-response');
 const express = require('express');
@@ -82,38 +83,3 @@ app.prepare().then(() => {
     console.log(`> Ready euy on http://localhost:${port}`);
   });
 });
-
-// const express = require('express');
-// const next = require('next');
-// const NextRedisCache = require('next-redis-cache');
-
-// const port = process.env.PORT || 3000;
-// const development = process.env.NODE_ENV !== 'production';
-// const app = next({ dev: development });
-// const handler = app.getRequestHandler();
-
-// /**
-//  *  Initialization of Next Redis Cache instance
-//  */
-// const nextRedisCache = new NextRedisCache('*', app, {
-//   includes: ['/'], // routes to include for caching
-// });
-
-// app
-//   .prepare()
-//   .then(() => {
-//     const server = express();
-
-//     server.get(
-//       '*',
-//       (request, response, nxt) => nextRedisCache.middleware(request, response, nxt),
-//       (request, response) => handler(request, response),
-//     );
-
-//     /* starting server */
-//     return server.listen(port, (error) => {
-//       if (error) throw error;
-//       console.log(`> Ready on http://localhost:${port}`);
-//     });
-//   })
-//   .catch((error) => new Error("Server isn't responded", error));

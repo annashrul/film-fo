@@ -2,24 +2,17 @@ import React, { useState, useEffect                                             
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Api from 'lib/httpService';
-// import Helper from 'lib/helper';
+import Helper from 'lib/helper';
 import {iProject,iPagin} from 'lib/interface';
 import { Pagination } from '@windmill/react-ui'
 import moment from 'moment'
 import nookies from 'nookies'
 import { NextPageContext } from 'next'
-import { handleDelete, handleGet } from "lib/handleAction";
+import { handleGet } from "lib/handleAction";
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
 import httpService from "lib/httpService";
-import ModalProject from 'components/Backoffice/Project/modal_project';
-import { DropdownMenu } from "@react-md/menu";
-import {
-    MoreVertSVGIcon,
-    AddCircleOutlineSVGIcon
-  } from "@react-md/material-icons";
-//   import { useToasts } from 'react-toast-notifications'
-import Swal from "sweetalert2";
+// import Mutasi from 'components/transaksi/mutasi_row'
 
 interface iProjectPage {
     datum: any;
@@ -32,9 +25,7 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
     const [datefrom,setDatefrom]=useState(moment(new Date()).format("MM/DD/yyyy"));
     const [dateto,setDateto]=useState(moment(new Date()).format("MM/DD/yyyy"));
     const [any,setAny]=useState("");
-    const [hitFirst,setHitFirst]=useState(1);
-    const [openProjectModal, setOpenProjectModal] = useState(false);
-    const [projectData,setProjectData]=useState({});
+        const [hitFirst,setHitFirst]=useState(1);
 
     useEffect(() => {
          setDatumProject(datum.datum.data);
@@ -75,26 +66,6 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
         handleLoadData(`page=1&datefrom=${from}&dateto=${to}&perpage=10`);
     }
 
-    const handleModal=(val:any)=>{
-        setProjectData(val);
-        setOpenProjectModal(true);
-    }
-
-    const handleDeleteData= async (id:string) => {
-        Swal.fire({
-            title: 'Yakin menghapus data ini?',
-            showCancelButton: true,
-            confirmButtonText: `Hapus`,
-            cancelButtonText: `Batal`,
-          }).then(async (result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                await handleDelete(Api.apiClient + `project/${id}`, async () => {});
-            } else {
-              Swal.close();
-            }
-          })
-    }
     return (
         <Layout title="Project">
             <div className="container mt-6 px-2 lg:px-7 mx-auto grid mb-20">
@@ -125,12 +96,6 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
                                 <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
                             </svg>
                         </button>
-                        <button 
-                            className="px-8 rounded-lg bg-white  text-gray-200 font-bold p-3 mt-1 uppercase border-white border-t border-b border-r"
-                            onClick={(event)=>{event.preventDefault();handleModal({})}}
-                            >
-                                <AddCircleOutlineSVGIcon />
-                        </button>
                     </div>
                 <br/>
                         <div className="w-full overflow-x-auto">
@@ -139,17 +104,17 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
                             <tr className="text-left border-b border-gray-300">
                                 {/* <th className="px-4 py-3">id</th> */}
                                 <th className="px-4 py-3">#</th>
-                                <th className="px-4 py-3">Title</th>
-                                <th className="px-4 py-3">Slug</th>
-                                <th className="px-4 py-3">Total tenant</th>
-                                <th className="px-4 py-3">Total penonton</th>
-                                <th className="px-4 py-3">Poster</th>
-                                <th className="px-4 py-3">Video</th>
-                                <th className="px-4 py-3">Durasi</th>
-                                <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3">Project</th>
-                                <th className="px-4 py-3">ID project</th>
-                                <th className="px-4 py-3">Created date</th>
+                                <th className="px-4 py-3">title</th>
+                                <th className="px-4 py-3">slug</th>
+                                <th className="px-4 py-3">total_tenant</th>
+                                <th className="px-4 py-3">total_penonton</th>
+                                <th className="px-4 py-3">poster</th>
+                                <th className="px-4 py-3">video</th>
+                                <th className="px-4 py-3">durasi</th>
+                                <th className="px-4 py-3">status</th>
+                                <th className="px-4 py-3">category</th>
+                                <th className="px-4 py-3">id_category</th>
+                                <th className="px-4 py-3">created_at</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,29 +123,12 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
                                     return(
                                     <tr className="bg-gray-700 border-b border-gray-600">
                                         {/* <td className="px-4 py-4">{item.id}</td> */}
-                                        <td className="px-4 py-4">
-                                            <div className="bg-grey-200">
-                                                <DropdownMenu
-                                                    id="example-dropdown-menu"
-                                                    items={[
-                                                    { onClick: () => handleDeleteData(item.id), children: "Delete" },
-                                                    { onClick: () => handleModal(item), children: "Edit" },
-                                                    // { onClick: () => handleModalDetail(item), children: "Detail" },
-                                                    ]}
-                                                    buttonType="icon"
-                                                    className="bg-grey-200"
-                                                    theme="primary"
-                                                    aria-label="Options..."
-                                                >
-                                                    <MoreVertSVGIcon />
-                                                </DropdownMenu>
-                                            </div>
-                                        </td>
+                                        <td className="px-4 py-4"><button type="button">ACTION</button></td>
                                         <td className="px-4 py-4">{item.title}</td>
                                         <td className="px-4 py-4">{item.slug}</td>
                                         <td className="px-4 py-4">{item.total_tenant}</td>
                                         <td className="px-4 py-4">{item.total_penonton}</td>
-                                        <td className="px-4 py-4"><img src={item.poster} alt="img"/></td>
+                                        <td className="px-4 py-4">{item.poster}</td>
                                         <td className="px-4 py-4">{item.video}</td>
                                         <td className="px-4 py-4">{item.durasi}</td>
                                         <td className="px-4 py-4">{item.status}</td>
@@ -203,7 +151,6 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
                     />
                 </div>
             </div>
-            <ModalProject open={openProjectModal} closeModal={() => setOpenProjectModal(false)} data={projectData} />
         </Layout>
       );
 }
