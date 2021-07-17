@@ -3,111 +3,52 @@ import {Home,users,Invest,Ticket,poinTf,tiketTf,Deposit,Withdraw,History,Genealo
 
 const Routes=[
     {
-        link:'/',
+        link:'/backoffice',
         title:'Home',
         icon: Home,
         routes:[]
     },
     {
-        link:'/mitra/new',
-        title:'Tambah Mitra',
+        link:'/backoffice/category',
+        title:'Kategori',
         icon: users,
         routes:[]
     },
     {
-        link:'/genealogy',
-        title:'Genealogy',
-        icon: Genealogy,
+        link:'/backoffice/project',
+        title:'Project',
+        icon: users,
         routes:[]
     },
     {
-        link:'/investment/create',
-        title:'Order Paket',
-        icon: Invest,
+        link:'/backoffice/tenant',
+        title:'Tenant',
+        icon: users,
+        routes:[]
+    },
+    {
+        link:'/backoffice/question',
+        title:'Pertanyaan',
+        icon: users,
         routes:[]
     },
     {
         link:'',
-        title:'Tiket Aktivasi',
-        icon: Ticket,
-        routes:[
-            {
-                link:'/tiket/order',
-                title:'Order Tiket',
-                icon: Ticket,
-                routes:[]
-            },
-            {
-                link:'/tiket/transfer',
-                title:'Transfer Tiket',
-                icon: tiketTf,
-                routes:[]
-            },
-        ]
-    },
-    {
-        link:'/wallet/deposit',
-        title:'e-Wallet',
-        icon: Deposit,
-        routes:[
-             {
-                link:'/wallet/deposit',
-                title:'Deposit',
-                icon: Deposit
-            },
-            {
-                link:'/wallet/transfer/poin',
-                title:'Transfer Poin Wallet',
-                icon: poinTf
-            },
-            {
-                link:'/wallet/withdrawal',
-                title:'Penarikan',
-                icon: Withdraw
-            },
-        ]
-    },
-    {
-        link:'',
-        title:'Laporan',
+        title:'Setting',
         icon: History,
         routes:[
             {
-                link:'/transaksi',
-                title:'Riwayat Transaksi',
+                link:'/backoffice/user-level',
+                title:'Level Pengguna',
                 icon: History
             },
             {
-                link:'/investment/report',
-                title:'Riwayat Investment',
+                link:'/backoffice/user',
+                title:'Pengguna',
                 icon: History
             },
-            {
-                link:'/wallet/deposit/report',
-                title:'Riwayat Deposit',
-                icon: History
-            },
-            {
-                link:'/wallet/withdrawal/report',
-                title:'Riwayat Penarikan',
-                icon: History
-            },
-            {
-                link:'/tiket/report',
-                title:'Riwayat Tiket',
-                icon: History
-            }
         ]
     },
-    // {
-    //     link:'/mou',
-    //     title:'E-MoU',
-    //     icon: Download,
-    //     routes:[]
-    // },
-    
-  
-
 ]
 
 export default Routes;

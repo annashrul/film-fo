@@ -12,6 +12,49 @@ export interface iUser {
   status: string;
   tanggal_tayang: string;
 }
+export interface iUserBo {
+  id: string;
+  token: string;
+  name: string;
+  username: string;
+  foto: string;
+  level: number;
+  access_level: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+export interface iPagin{
+  current_page:number;
+  total:number;
+  per_page:number;
+  summary:{
+    trx_in:number;
+    trx_out:number;
+    saldo_awal:number;
+  }
+}
+export interface iProject{
+  id:string,
+  title:string,
+  slug:string,
+  total_tenant:string,
+  total_penonton:string,
+  poster:string,
+  video:string,
+  durasi:string,
+  status:string,
+  category:string,
+  id_category:string,
+  created_at:string,
+}
+export interface iCategory{
+  id:string,
+  title:string,
+  type:string,
+  created_at:string,
+  updated_at:string,
+}
 
 export interface iTenant {
   id: string;

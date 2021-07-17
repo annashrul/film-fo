@@ -19,7 +19,6 @@ const LayoutPage: React.FC<SEOProps> = ({children, ...rest }) => {
           {
             title!=='Login'&& <Header openProfile={openProfile} toggleProfile={(toggle:boolean)=>setOpenProfile(toggle)} toggleSidebar={() => setOpen(!open)} />
           }
-            
             <main className="h-full overflow-y-auto" onClick={()=>setOpenProfile(false)}>
               <div className="container grid px-6 mx-auto">{children}</div>
             </main>
