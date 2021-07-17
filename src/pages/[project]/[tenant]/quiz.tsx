@@ -1,58 +1,27 @@
 import { NextPageContext } from 'next';
 import React, { useState, useEffect } from 'react';
 import { iQuiz } from 'lib/interface';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import 'antd/dist/antd.css';
 import _ from 'lodash';
 import helper from 'lib/helper';
-
-interface iGetQuiz {
-  response: iQuiz;
-}
-export type Quiz = {
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: [string];
-};
+import httpService from 'lib/httpService';
+import nookies from 'nookies';
 
 export type QuizResponse = {
-  response_code: number;
-  results: Quiz[];
+  data: any;
 };
 
-const answer = [true, false];
-
-const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
+const Tenant: React.FC<QuizResponse> = ({ data }) => {
   const [indexQuiz, setIndexQuiz] = useState(0);
   const [selectedQuiz, setSelectedQuiz] = useState(1000);
-  const [quizzes, setQuizzes] = useState(initial);
-  const [quizChoice, setQuizChoice] = useState([{ question: '', answer: false }]);
+  const [dataQuiz, setDataQuiz] = useState<Array<iQuiz>>([]);
+  const [quizChoice, setQuizChoice] = useState([{ question: '', answer: '' }]);
   const [counter, setCounter] = React.useState(0);
   const [startTimer, setStartTimer] = React.useState(false);
-  const [inCorrectAnswer, setIncorrectAnswer] = React.useState([]);
-  const [finish, setFinish] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
 
-  const fetchData = async (): Promise<void> => {
-    setLoading(true);
-    const res = await fetch('https://opentdb.com/api.php?amount=2&type=boolean');
-    res
-      .json()
-      .then((res) => {
-        setQuizzes(res);
-        setLoading(false);
-      })
-      .catch((err) => setLoading(false));
-    setStartTimer(false);
-    setCounter(180);
-    setFinish(false);
-    setSelectedQuiz(1000);
-    setIndexQuiz(0);
-    setQuizChoice([{ question: '', answer: false }]);
-  };
+  const [finish, setFinish] = React.useState(false);
+
   useEffect(() => {
     if (counter > 0) {
       const timer = setInterval(() => setCounter(counter - 1), 1000);
@@ -66,40 +35,47 @@ const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
   }, [counter, startTimer]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setDataQuiz(data);
+  }, [dataQuiz]);
 
   const handleChoice = (key: number) => {
     let data = quizChoice;
-    let soal = quizzes?.results[indexQuiz].question;
-    // let inAnswer = inCorrectAnswer;
-
-    console.log('jawaban yang benar', quizzes?.results[indexQuiz].incorrect_answers.toString());
-    // setTempAnswer();
+    let soal = dataQuiz[indexQuiz].question;
+    console.log('jawaban yang benar', dataQuiz[indexQuiz].choise[key].answer);
     setSelectedQuiz(key);
     if (quizChoice[0].question === '') {
       console.log('ditimpa');
-      setQuizChoice([{ question: soal ? soal.toString() : '', answer: answer[key] }]);
+      setQuizChoice([{ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer }]);
       return;
     }
-    if (soal === quizChoice[indexQuiz]?.question && quizChoice[indexQuiz]?.answer === answer[key]) {
+    if (
+      soal === quizChoice[indexQuiz]?.question &&
+      quizChoice[indexQuiz]?.answer === dataQuiz[indexQuiz].choise[key].answer
+    ) {
       console.log('soal dan jawaban sama');
       return;
-    } else if (soal === quizChoice[indexQuiz]?.question && quizChoice[indexQuiz]?.answer !== answer[key]) {
+    } else if (
+      soal === quizChoice[indexQuiz]?.question &&
+      quizChoice[indexQuiz]?.answer !== dataQuiz[indexQuiz].choise[key].answer
+    ) {
       console.log(
-        'soal sama jawaban sebelum = ' + quizChoice[indexQuiz].answer + ' dan diganti dengan jawaban ' + answer[key],
+        'soal sama jawaban sebelum = ' +
+          quizChoice[indexQuiz].answer +
+          ' dan diganti dengan jawaban ' +
+          dataQuiz[indexQuiz].choise[key].answer,
       );
-      Object.assign(data[indexQuiz], { question: soal ? soal.toString() : '', answer: answer[key] });
+      Object.assign(data[indexQuiz], {
+        question: soal ? soal.toString() : '',
+        answer: dataQuiz[indexQuiz].choise[key].answer,
+      });
     } else {
       console.log('push array');
-      data.push({ question: soal ? soal.toString() : '', answer: answer[key] });
+      data.push({ question: soal ? soal.toString() : '', answer: dataQuiz[indexQuiz].choise[key].answer });
     }
 
-    console.log(data);
     setQuizChoice(data);
     return;
   };
-
   const temp = (key: any, val: any) => {
     return (
       <div onClick={() => !finish && handleChoice(key)} key={key}>
@@ -109,7 +85,7 @@ const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
           } cursor-pointer shadow rounded-xl`}
         >
           <div className="flex">
-            <span className="text-xs w-full items-center justify-center">{val ? 'Benar' : 'Salah'}</span>
+            <span className="text-xs w-full items-center justify-center">{val.answer}</span>
             {selectedQuiz === key || finish ? (
               <span className="text-xs w-auto">
                 <svg
@@ -145,55 +121,70 @@ const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
             <div className="flex items-center justify-center">
               <span className="h-px w-16 bg-gray-300" />
               <span className="text-gray-500 font-normal">
-                {finish ? 'HASIL QUIZ' : ` soal ${indexQuiz + 1} / ${quizzes?.results.length}`}
+                {finish ? 'HASIL QUIZ' : ` soal ${indexQuiz + 1} / ${dataQuiz.length}`}
               </span>
               <span className="h-px w-16 bg-gray-300" />
             </div>
             <div className="grid grid-cols-1 gap-2 w-full max-w-screen-sm mt-2">
-              {!finish && (
-                <span className="text-primary-600 text-xs">
-                  {loading ? 'tunggu sebentar ......' : _.unescape(quizzes?.results[indexQuiz].question)}
-                </span>
-              )}
-              {!finish &&
-                answer.map((val, key) => {
-                  return <>{temp(key, val)}</>;
-                })}
-
-              {finish && (
-                <>
-                  {quizChoice.map((res, key) => {
-                    if (`${res.answer}`.toLowerCase() === `${quizzes?.results[key].correct_answer}`.toLowerCase()) {
-                      nilai += 50;
-                    } else {
-                      nilai = 0;
-                    }
-                    return null;
-                  })}
-                  <p className="flex flex-col items-center justify-center">
-                    <img
-                      src={`${
-                        helper.nilaiAkhir(nilai)
-                          ? 'https://i02.appmifile.com/716_bbs_en/17/07/2020/fbfd3d4d29.gif'
-                          : 'https://i.pinimg.com/originals/71/c7/60/71c76025a232b42e8a458ac1656cab65.gif'
-                      }`}
-                      className="h-20"
-                    />
-                    nilai kamu : {nilai}
-                  </p>
-                </>
+              {dataQuiz ? (
+                dataQuiz.length > 0 ? (
+                  <>
+                    {!finish && (
+                      <span className="text-primary-600 text-xs">{_.unescape(dataQuiz[indexQuiz].question)}</span>
+                    )}
+                    {!finish &&
+                      dataQuiz[indexQuiz].choise.map((val, key) => {
+                        return <>{temp(key, val)}</>;
+                      })}
+                    {finish && (
+                      <>
+                        {quizChoice.map((res, key) => {
+                          if (
+                            `${res.answer}`.toLowerCase() ===
+                            `${dataQuiz[indexQuiz].choise[key].is_right}`.toLowerCase()
+                          ) {
+                            nilai += 50;
+                          } else {
+                            nilai = 0;
+                          }
+                          return null;
+                        })}
+                        <p className="flex flex-col items-center justify-center">
+                          <img
+                            src={`${
+                              helper.nilaiAkhir(nilai)
+                                ? 'https://i02.appmifile.com/716_bbs_en/17/07/2020/fbfd3d4d29.gif'
+                                : 'https://i.pinimg.com/originals/71/c7/60/71c76025a232b42e8a458ac1656cab65.gif'
+                            }`}
+                            className="h-20"
+                          />
+                          nilai kamu : {nilai}
+                        </p>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  ''
+                )
+              ) : (
+                ''
               )}
             </div>
+
             <div className="flex mt-10">
               <div className="w-full items-center justify-center">
                 {finish && (
                   <div className="flex items-center justify-center">
                     <Button
-                      loading={loading}
                       onClick={() => {
                         if (finish) {
-                          fetchData();
-                          return;
+                          setDataQuiz(data);
+                          setStartTimer(false);
+                          setCounter(180);
+                          setFinish(false);
+                          setSelectedQuiz(1000);
+                          setIndexQuiz(0);
+                          setQuizChoice([{ question: '', answer: '' }]);
                         }
                       }}
                       size="large"
@@ -215,23 +206,23 @@ const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
                     size="large"
                     type="primary"
                     onClick={() => {
-                      if (selectedQuiz !== 1000) {
-                        setSelectedQuiz(1000);
-                        let i = indexQuiz;
-                        if (quizzes) {
-                          if (quizzes.results.length - 1 > indexQuiz) {
-                            i++;
-                            setIndexQuiz(i);
-                            return;
-                          }
+                      // if (selectedQuiz !== 1000) {
+                      setSelectedQuiz(1000);
+                      let i = indexQuiz;
+                      if (dataQuiz) {
+                        if (dataQuiz.length - 1 > indexQuiz) {
+                          i++;
+                          setIndexQuiz(i);
+                          return;
                         }
-                        setFinish(true);
-                        setIndexQuiz(0);
-                        setCounter(0);
-                        setStartTimer(false);
-                      } else {
-                        message.error('silahkan pilih jawaban anda');
                       }
+                      setFinish(true);
+                      setIndexQuiz(0);
+                      setCounter(0);
+                      setStartTimer(false);
+                      // } else {
+                      //   message.error('silahkan pilih jawaban anda');
+                      // }
                     }}
                   >
                     {'Lanjutkan'}
@@ -247,19 +238,24 @@ const Tenant: React.FC<{ initial?: QuizResponse }> = ({ initial }) => {
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  let response: any = [];
-  // try {
-  //   const getDetail = await httpService.get(httpService.apiUrl + `question`);
-  //   if (getDetail.status === 200) {
-  //     response = getDetail.data.result;
-  //   } else {
-  //     response = [];
-  //   }
-  // } catch (err) {}
-  // console.log('#######################################', response);
+  const cookies = nookies.get(ctx);
+  if (!cookies._eduflix) {
+    return { redirect: { destination: '/', permanent: false } };
+  } else {
+    httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
+  }
+  let data: any = [];
+  try {
+    const getDetail = await httpService.get(httpService.apiUrl + `question`);
+    if (getDetail.status === 200) {
+      data = getDetail.data.result.data;
+    } else {
+      data = [];
+    }
+  } catch (err) {}
 
   return {
-    props: { response },
+    props: { data }, // will be passed to the page component as props
   };
 }
 

@@ -10,6 +10,8 @@ import Sess from 'lib/auth';
 import { Button, message, Steps } from 'antd';
 import 'antd/dist/antd.css';
 import OTPInput from 'components/Common/Otp';
+import nookies from 'nookies';
+
 const { Step } = Steps;
 const steps = [
   { content: '' },
@@ -23,9 +25,10 @@ interface iAuth {
 }
 
 const Auth: React.FC<iAuth> = ({ response }) => {
+  console.log(response);
   const router = useRouter();
 
-  const [resOtp, setResOtp] = useState({ otp: '', transaction_token: '' });
+  const [resOtp, setResOtp] = useState({ otp: '' });
   const [current, setCurrent] = React.useState(0);
   const [ticketCode, setTicketCode] = React.useState('');
   const [noHandphone, setNoHandphone] = React.useState('');
@@ -72,7 +75,7 @@ const Auth: React.FC<iAuth> = ({ response }) => {
           message.error('otp tidak tidak sesuai');
           return;
         }
-        message.success('berhasil');
+        handleSubmitOtp(otp);
         // setCurrent(current + 1);
         return;
       }
@@ -85,6 +88,9 @@ const Auth: React.FC<iAuth> = ({ response }) => {
   const handleSubmitTicket = () => {
     handlePost(httpService.apiClient + 'auth/tiket', { ticket: ticketCode }, (res, status, msg) => {
       if (status) {
+        Sess.setToken(res.result.token);
+        Sess.http.axios.defaults.headers.common['Authorization'] = res.result.token;
+
         Object.assign(res.result, response);
         setUser(res.result);
         message.success(msg);
@@ -95,9 +101,7 @@ const Auth: React.FC<iAuth> = ({ response }) => {
   const handleSubmitPhone = (type = 'send') => {
     handlePost(httpService.apiClient + 'auth/otp', { nomor: noHandphone, ticket: user?.ticket }, (res, status, msg) => {
       if (status) {
-        Sess.setToken(res.result.transaction_token);
-        Sess.http.axios.defaults.headers.common['Authorization'] = res.result.transaction_token;
-        setResOtp({ otp: res.result.otp_anying, transaction_token: res.result.transaction_token });
+        setResOtp({ otp: res.result.otp_anying });
         setStartTimer(false);
         setCounter(180);
         message.success(msg);
@@ -115,11 +119,9 @@ const Auth: React.FC<iAuth> = ({ response }) => {
         message.error('otp tidak tidak sesuai');
         return;
       }
-      console.log(resOtp);
       message.success('berhasil');
-
       router.push({
-        pathname: '/[project]/[tenant]/quiz',
+        pathname: '/[project]/[tenant]/film',
         query: { project: response.project_slug, tenant: response.slug },
       });
     }
@@ -230,18 +232,20 @@ const Auth: React.FC<iAuth> = ({ response }) => {
 
 export async function getServerSideProps(ctx: NextPageContext) {
   let response: any = [];
+  // const cookies = nookies.get(ctx);
+  // httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
 
+  // console.log('#######################', cookies._eduflix);
   try {
     const getDetail = await httpService.get(httpService.apiUrl + `tenant/get/${ctx.query.tenant}`);
-    console.log('###################################', getDetail);
+
     if (getDetail.status === 200) {
       response = getDetail.data.result;
     } else {
       response = [];
     }
-  } catch (err) {
-    console.log('###################################', err);
-  }
+  } catch (err) {}
+  console.log('############### ', response);
 
   return {
     props: { response },
