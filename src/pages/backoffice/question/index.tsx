@@ -2,7 +2,7 @@ import React, { useState, useEffect                                             
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Api from 'lib/httpService';
-import Helper from 'lib/helper';
+// import Helper from 'lib/helper';
 import {iQuiz,iPagin} from 'lib/interface';
 import { Pagination } from '@windmill/react-ui'
 import moment from 'moment'
@@ -149,7 +149,7 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) =>{
                             {
                             datumQuestion?.length>0?datumQuestion.map((item:iQuiz,i:number)=>{
                                     return(
-                                    <tr className="bg-gray-700 border-b border-gray-600">
+                                    <tr className="bg-gray-700 border-b border-gray-600" key={i}>
                                         <td className="px-4 py-4">
                                             <div className="bg-grey-200">
                                                 <DropdownMenu

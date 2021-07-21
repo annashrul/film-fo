@@ -2,7 +2,7 @@ import NProgress from 'nprogress'; //nprogress module
 import Api from 'lib/httpService';
 import Swal from 'sweetalert2';
 import helper from './helper';
-import { Button, message, Steps } from 'antd';
+import { message } from 'antd';
 import 'antd/dist/antd.css';
 
 const strNetworkError = 'terjadi kesalahan pada jaringan';

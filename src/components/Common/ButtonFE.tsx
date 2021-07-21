@@ -1,7 +1,7 @@
 import React from 'react';
 
 import 'antd/dist/antd.css';
-import { Spin } from 'antd';
+// import { Spin } from 'antd';
 
 interface iButtonFE {
   title: string;

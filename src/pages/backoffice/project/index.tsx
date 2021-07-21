@@ -156,7 +156,7 @@ const ProjectPage: React.FC<iProjectPage> = (datum) =>{
                             {
                             datumProject?.length>0?datumProject.map((item:iProject,i:number)=>{
                                     return(
-                                    <tr className="bg-gray-700 border-b border-gray-600">
+                                    <tr className="bg-gray-700 border-b border-gray-600" key={i}>
                                         {/* <td className="px-4 py-4">{item.id}</td> */}
                                         <td className="px-4 py-4">
                                             <div className="bg-grey-200">

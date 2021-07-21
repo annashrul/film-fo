@@ -160,7 +160,7 @@ const TenantPage: React.FC<iTenantPage> = (datum) =>{
                             {
                             datumTenant?.length>0?datumTenant.map((item:iTenant,i:number)=>{
                                     return(
-                                    <tr className="bg-gray-700 border-b border-gray-600">
+                                    <tr className="bg-gray-700 border-b border-gray-600" key={i}>
                                         {/* <td className="px-4 py-4">{item.id}</td> */}
                                         <td className="px-4 py-4">
                                             <div className="bg-grey-200">

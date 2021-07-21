@@ -2,10 +2,10 @@ import React, { useState,useEffect } from 'react';
 import { Modal, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 import Api from 'lib/httpService';
 import Helper from 'lib/helper';
-import { handlePut,handleGet, handlePost } from 'lib/handleAction';
-import { useRouter } from 'next/router'
+import { handlePut, handlePost } from 'lib/handleAction';
+// import { useRouter } from 'next/router'
 import { useToasts } from 'react-toast-notifications'
-import Sess from "lib/auth";
+// import Sess from "lib/auth";
 
 
 interface iModalCategory {
@@ -17,7 +17,7 @@ const ModalCategory: React.FC<iModalCategory> = ({ open, closeModal, data }) => 
   const { addToast } = useToasts();
   const [ftitle,setFtitle]=useState("");
   const [ftype,setFtype]=useState("0");
-  const router = useRouter()
+  // const router = useRouter()
 
   useEffect(()=>{
     if(data.id!==undefined){

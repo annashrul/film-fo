@@ -141,7 +141,7 @@ const CategoryPage: React.FC<iCategoryPage> = (datum) =>{
                         {
                             datumCategory?.length>0?datumCategory.map((item:iCategory,i:number)=>{
                                     return(
-                                        <div className="w-full lg:w-1/4">
+                                        <div className="w-full lg:w-1/4" key={i}>
                                             <div className="widget w-full p-4 rounded-lg dark:bg-grey-700 bg-white border border-gray-100 dark:border-gray-800">
                                                 <div className="flex flex-row items-center justify-between">
                                                 <div className="flex flex-col">

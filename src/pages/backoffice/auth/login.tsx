@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState} from 'react';
 import { NextPageContext } from 'next'
 import "react-intl-tel-input/dist/main.css";
 import { NextPage } from 'next';
@@ -15,7 +15,7 @@ interface iLogin  {
   apiUrl:string;
   otpLength: number;
 }
-const Login: NextPage<iLogin> = ({otpLength}) =>{ 
+const Login: NextPage<iLogin> = ({}) =>{ 
   const router = useRouter()
 
   // const cekSess = Sess.getToken();

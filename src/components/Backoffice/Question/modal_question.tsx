@@ -7,7 +7,7 @@ import { handlePut, handlePost, handleGet } from 'lib/handleAction';
 import { useToasts } from 'react-toast-notifications'
 // import Sess from "lib/auth";
 
-import Cropper from 'react-cropper';
+// import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import { iProject } from 'lib/interface';
 
@@ -31,8 +31,8 @@ const ModalQuestion: React.FC<iModalQuestion> = ({ open, closeModal, data }) => 
   const [fresponsible_no,setFresponsible_no]=useState("");
   const [fstatus,setFstatus]=useState("");
   const [fproject,setFproject]=useState("");
-  const [flogo,setFlogo]=useState("");
-  const [cropper, setCropper] = useState<any>();
+  // const [flogo,setFlogo]=useState("");
+  // const [cropper, setCropper] = useState<any>();
   // const router = useRouter()
 
   useEffect(()=>{
@@ -69,20 +69,20 @@ const ModalQuestion: React.FC<iModalQuestion> = ({ open, closeModal, data }) => 
     closeModal();
   };
 
-  const onChange = (e: any) => {
-    e.preventDefault();
-    let files;
-    if (e.dataTransfer) {
-      files = e.dataTransfer.files;
-    } else if (e.target) {
-      files = e.target.files;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setFlogo(reader.result as any);
-    };
-    reader.readAsDataURL(files[0]);
-  };
+  // const onChange = (e: any) => {
+  //   e.preventDefault();
+  //   let files;
+  //   if (e.dataTransfer) {
+  //     files = e.dataTransfer.files;
+  //   } else if (e.target) {
+  //     files = e.target.files;
+  //   }
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     setFlogo(reader.result as any);
+  //   };
+  //   reader.readAsDataURL(files[0]);
+  // };
 
   const handleSubmit= async () => {
     let datum: any = {};
@@ -91,11 +91,11 @@ const ModalQuestion: React.FC<iModalQuestion> = ({ open, closeModal, data }) => 
           appearance: 'error',
           autoDismiss: true,
       })
-    } else if(cropper.getCroppedCanvas() === null){
-      addToast("Poster tidak boleh kosong.", {
-          appearance: 'error',
-          autoDismiss: true,
-      })
+    // } else if(cropper.getCroppedCanvas() === null){
+    //   addToast("Poster tidak boleh kosong.", {
+    //       appearance: 'error',
+    //       autoDismiss: true,
+    //   })
     } else if(faddress===""){
       addToast("Address tidak boleh kosong.", {
           appearance: 'error',
@@ -149,7 +149,7 @@ const ModalQuestion: React.FC<iModalQuestion> = ({ open, closeModal, data }) => 
     } else {
       Object.assign(datum, {
         'title': ftitle,
-        'logo': cropper.getCroppedCanvas().toDataURL(),
+        // 'logo': cropper.getCroppedCanvas().toDataURL(),
         'address': faddress,
         'price': fprice,
         'provinsi': fprovinsi,

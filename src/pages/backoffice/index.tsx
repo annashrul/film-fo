@@ -2,9 +2,11 @@ import React from 'react';
 import Layout from '../../Layouts'
 import { NextPageContext } from 'next'
 import nookies from 'nookies'
+interface iDashboard {
+  datum: any;
+}
 
-
-const Dashboard: React.FC<iDashboard> = ({widget,berita,report,bonus}) => {
+const Dashboard: React.FC<iDashboard> = ({}) => {
 
   return (
       <Layout title="Dashboard">
@@ -33,15 +35,15 @@ export async function getServerSideProps(ctx:NextPageContext) {
   }
 
     // GET BANK DATA
-  let datum=[];
-  try {
-    const getData = await Api.get(Api.apiUrl+"site/memberarea")
-    if(getData.status===200){
-      datum=getData.data.result;
-    }else{
-      datum=[];
-    }
-  } catch (err) {}
+  // let datum=[];
+  // try {
+  //   const getData = await Api.get(Api.apiUrl+"site/memberarea")
+  //   if(getData.status===200){
+  //     datum=getData.data.result;
+  //   }else{
+  //     datum=[];
+  //   }
+  // } catch (err) {}
 
 //   let berita:any=[];
 //   await handleGet(Api.apiUrl+'content/berita',(res)=>{
@@ -63,7 +65,7 @@ export async function getServerSideProps(ctx:NextPageContext) {
 
   return { props:{
       cookies,
-      widget:datum,
+      // widget:datum,
     //   berita,
     //   report,
     //   bonus

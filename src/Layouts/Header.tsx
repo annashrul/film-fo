@@ -18,13 +18,13 @@ const Header: React.FC<HeaderProps> = ({toggleSidebar,openProfile,toggleProfile}
   const router = useRouter()
   const [nama,setNama]=React.useState('-');
   const [foto,setFoto]=React.useState('-');
-  // useEffect(() => {
-  //   const coo: string=Cookies.get('__uid')!;
-  //   const datum:iUser= JSON.parse(atob(coo));
-  //   setNama(datum.fullname)
-  //   setFoto(datum.foto)
+  useEffect(() => {
+    const coo: string=Cookies.get('__uid')!;
+    const datum:iUser= JSON.parse(atob(coo));
+    setNama(datum.fullname)
+    setFoto(datum.fullname)
 
-	// }, []);
+	}, []);
   const actLogout=()=>{
     doLogout();
     router.push('/auth/login')

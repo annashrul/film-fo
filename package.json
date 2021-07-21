@@ -34,11 +34,8 @@
     "next": "^10.1.3",
     "next-auth": "^3.14.8",
     "next-cookies": "^2.0.3",
-<<<<<<< HEAD
     "next-redis-cache": "^1.0.3",
-=======
     "node-sass": "^4.14.1",
->>>>>>> a87ac634f49dc2637699d0313e69fc2ccc6cf0f9
     "nookies": "^2.5.2",
     "nprogress": "^0.2.0",
     "performant-array-to-tree": "^1.8.1",

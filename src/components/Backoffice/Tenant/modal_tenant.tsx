@@ -9,7 +9,7 @@ import { useToasts } from 'react-toast-notifications'
 
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import { iProject, iTenant } from 'lib/interface';
+import { iProject } from 'lib/interface';
 
 
 interface iModalTenant {
@@ -18,7 +18,7 @@ interface iModalTenant {
   data: any;
 }
 const ModalTenant: React.FC<iModalTenant> = ({ open, closeModal, data }) => {
-  const [datumTenant,setDatumTenant]= useState<Array<iTenant>>([]);
+  // const [datumTenant,setDatumTenant]= useState<Array<iTenant>>([]);
   const [datumProject,setDatumProject]= useState<Array<iProject>>([]);
   const { addToast } = useToasts();
   const [ftitle,setFtitle]=useState("");
