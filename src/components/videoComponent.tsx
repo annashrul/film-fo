@@ -38,7 +38,21 @@ export const VideoPlayer = () => {
     },
   };
   const router = useRouter();
-
+  // useEffect(() => {
+  //   if ('serviceWorker' in navigator) {
+  //     console.log(navigator);
+  //     window.addEventListener('load', function () {
+  //       navigator.serviceWorker.register('/sw.js').then(
+  //         function (registration) {
+  //           console.log('Service Worker registration successful with scope: ', registration.scope);
+  //         },
+  //         function (err) {
+  //           console.log('Service Worker registration failed: ', err);
+  //         },
+  //       );
+  //     });
+  //   }
+  // }, []);
   useEffect(() => {
     if (videoPlayerRef) {
       const player = videojs(videoPlayerRef.current, videoJSOptions, () => {
@@ -46,13 +60,14 @@ export const VideoPlayer = () => {
 
         player.src(videoSrc);
         player.on('ended', () => {
-          console.log('ended');
-          helper.mySwalWithCallback('silahkan ikuti quiz yang kami berikan', () => {
-            router.push({
-              pathname: '/[project]/[tenant]/quiz',
-              query: { project: router.query.project, tenant: router.query.tenant },
-            });
-          });
+          console.log('endedsdsdsd');
+          // helper.mySwalWithCallback('silahkan ikuti quiz yang kami berikan', () => {
+          //   console.log(router.query.project);
+          //   router.push({
+          //     pathname: '/[project]/[tenant]/quiz',
+          //     query: { project: router.query.project, tenant: router.query.tenant },
+          //   });
+          // });
         });
         player.on('timeupdate', (e: any, _: any, second: any) => {
           setCurrentTime(player.currentTime());

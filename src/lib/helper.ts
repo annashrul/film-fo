@@ -187,7 +187,39 @@ export const handleRoute = (ctx: NextPageContext) => {
   }
 };
 
+export const sw = () => {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').then(
+        function (registration) {
+          console.log('Service Worker registration successful with scope: ', registration.scope);
+        },
+        function (err) {
+          console.log('Service Worker registration failed: ', err);
+        },
+      );
+    });
+  }
+  return;
+};
+
+var date = new Date();
+date.setDate(date.getDate());
+export const rangeDate = {
+  'Hari Ini': [date.setDate(date.getDate()), moment()],
+  Kemarin: [date.setDate(date.getDate() - 1), date.setDate(date.getDate())],
+  '7 Hari Terakhir': [moment().subtract(7, 'days'), moment()],
+  '30 Hari Terakhir': [moment().subtract(30, 'days'), moment()],
+  'Minggu Ini': [moment().startOf('isoWeek'), moment().endOf('isoWeek')],
+  'Minggu Lalu': [moment().subtract(1, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
+  'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+  'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+  'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
+  'Tahun Lalu': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+};
+
 export default {
+  sw,
   nilaiAkhir,
   isEmpty,
   removeHtml,

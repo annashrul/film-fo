@@ -32,25 +32,26 @@ interface AuthProps {
 }
 const Auth: React.FC<AuthProps> = ({ subTitle, title, children }) => {
   return (
-        <AuthStyle subTitle={subTitle}>
-          <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-          <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-            <div className="flex flex-col overflow-y-auto md:flex-column">
-                <img
-                  src='/logo.png'
-                  width="150px"
-                  alt={title}
-                  style={{
-                    display: 'block',
-                    marginLeft: 'auto',
-                    marginRight: 'auto'
-                  }}/>
-                {subTitle && <p className='text-center text-white mt-2 text-md dark:text-gray-400 text-bold'>{subTitle}</p>}
-                {children}
-            </div>
+    <AuthStyle subTitle={subTitle}>
+      <div className="flex items-center min-h-screen p-6">
+        <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden  rounded-lg shadow-xl ">
+          <div className="flex flex-col overflow-y-auto md:flex-column">
+            <img
+              src="/logo.png"
+              width="150px"
+              alt={title}
+              style={{
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+            />
+            {subTitle && <p className="text-center text-white mt-2 text-md dark:text-gray-400 text-bold">{subTitle}</p>}
+            {children}
           </div>
         </div>
-        </AuthStyle>
+      </div>
+    </AuthStyle>
   );
 };
 export default Auth;

@@ -1,54 +1,51 @@
-import {Home,users,Invest,Ticket,poinTf,tiketTf,Deposit,Withdraw,History,Genealogy} from 'icons';
+import { setting, dashboard, question, category, project, tenant } from 'icons';
 
-
-const Routes=[
-    {
-        link:'/backoffice',
-        title:'Home',
-        icon: Home,
-        routes:[]
-    },
-    {
-        link:'/backoffice/category',
-        title:'Kategori',
-        icon: users,
-        routes:[]
-    },
-    {
-        link:'/backoffice/project',
-        title:'Project',
-        icon: users,
-        routes:[]
-    },
-    {
-        link:'/backoffice/tenant',
-        title:'Tenant',
-        icon: users,
-        routes:[]
-    },
-    {
-        link:'/backoffice/question',
-        title:'Pertanyaan',
-        icon: users,
-        routes:[]
-    },
-    {
-        link:'',
-        title:'Setting',
-        icon: History,
-        routes:[
-            {
-                link:'/backoffice/user-level',
-                title:'Level Pengguna',
-                icon: History
-            },
-            {
-                link:'/backoffice/user',
-                title:'Pengguna',
-                icon: History
-            },
-        ]
-    },
-]
+const Routes = [
+  {
+    link: '/backoffice',
+    title: 'Dashboard',
+    icon: dashboard,
+    routes: [],
+  },
+  {
+    link: '/backoffice/category',
+    title: 'Kategori',
+    icon: category,
+    routes: [],
+  },
+  {
+    link: '/backoffice/project',
+    title: 'Project',
+    icon: project,
+    routes: [],
+  },
+  {
+    link: '/backoffice/tenant',
+    title: 'Tenant',
+    icon: tenant,
+    routes: [],
+  },
+  {
+    link: '/backoffice/question',
+    title: 'Pertanyaan',
+    icon: question,
+    routes: [],
+  },
+  {
+    link: '',
+    title: 'Setting',
+    icon: setting,
+    routes: [
+      {
+        link: '/backoffice/user-level',
+        title: 'Level Pengguna',
+      },
+      {
+        link: '/backoffice/user',
+        title: 'Pengguna',
+      },
+    ],
+  },
+];
 
 export default Routes;

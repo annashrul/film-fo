@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 const SEO: React.FC<SEOProps> = ({ description, keywords, title }) => (
   <Head>
-    <title>{title} | Prowara</title>
+    <title>{title} | Eduflix</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords?.join(', ')} />
     <meta property="og:type" content="website" />
@@ -47,11 +47,9 @@ export interface SEOProps {
 }
 
 SEO.defaultProps = {
-  description: 'ProWara (Program Waralaba Rakyat) adalah konsep yang bertujuan untuk membantu serta membangkitkan Ekonomi Kerakyatan di pasca Pandemi.',
-  keywords: [
-    'prowara',
-    'Program Waralaba Rakyat'
-  ],
+  description:
+    'ProWara (Program Waralaba Rakyat) adalah konsep yang bertujuan untuk membantu serta membangkitkan Ekonomi Kerakyatan di pasca Pandemi.',
+  keywords: ['prowara', 'Program Waralaba Rakyat'],
 };
 
 export default SEO;
