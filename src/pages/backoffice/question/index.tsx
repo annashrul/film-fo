@@ -11,8 +11,9 @@ import { Modal } from 'rsuite';
 import httpService from 'lib/httpService';
 import { handleGet } from 'lib/handleAction';
 import { Collapse, Select } from 'antd';
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { ConsoleSqlOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
+import helper from 'lib/helper';
 const { Panel } = Collapse;
 const { Option } = Select;
 interface iQuestionPage {
@@ -29,19 +30,22 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) => {
 
   useEffect(() => {
     console.log('asdasd', datum.datum);
-    // if ('serviceWorker' in navigator) {
-    //   window.addEventListener('load', function () {
-    //     navigator.serviceWorker.register('/sw.js').then(
-    //       function (registration) {
-    //         console.log(registration);
-    //         console.log('Service Worker registration successful with scope: ', registration.scope);
-    //       },
-    //       function (err) {
-    //         console.log('Service Worker registration failed: ', err);
-    //       },
-    //     );
-    //   });
-    // }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').then(
+          function (registration) {
+            console.log(registration);
+            console.log('Service Worker registration successful with scope: ', registration.scope);
+          },
+          function (err) {
+            console.log('Service Worker registration failed: ', err);
+          },
+        );
+        navigator.serviceWorker.controller?.postMessage({
+          type: 'POST_MESSAGE',
+        });
+      });
+    }
 
     setDatumQuestion(datum.datum);
     setArrData(datum.datum);
@@ -190,39 +194,15 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) => {
     </Layout>
   );
 };
-export async function getStaticProps(ctx: NextPageContext) {
-  // console.log('######################## SERVER', ctx);
+// export async function getStaticProps(ctx: NextPageContext) {
+//   // console.log('######################## SERVER', ctx);
 
-  // const cookies = nookies.get(ctx);
-  // if (!cookies._eduflix) {
-  //   return { redirect: { destination: '/backoffice/auth', permanent: false } };
-  // } else {
-  //   httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
-  // }
-  let datum: any = [];
-  try {
-    const getDetail = await httpService.get(httpService.apiUrl + `question`);
-    if (getDetail.status === 200) {
-      datum = getDetail.data.result.data;
-    } else {
-      datum = [];
-    }
-  } catch (err) {
-    console.log('#########ERROR ANYING###############', err);
-  }
-
-  return {
-    props: { datum }, // will be passed to the page component as props
-  };
-}
-
-// export async function getServerSideProps(ctx: NextPageContext) {
-//   const cookies = nookies.get(ctx);
-//   if (!cookies._eduflix) {
-//     return { redirect: { destination: '/backoffice/auth', permanent: false } };
-//   } else {
-//     httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
-//   }
+//   // const cookies = nookies.get(ctx);
+//   // if (!cookies._eduflix) {
+//   //   return { redirect: { destination: '/backoffice/auth', permanent: false } };
+//   // } else {
+//   //   httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
+//   // }
 //   let datum: any = [];
 //   try {
 //     const getDetail = await httpService.get(httpService.apiUrl + `question`);
@@ -235,11 +215,35 @@ export async function getStaticProps(ctx: NextPageContext) {
 //     console.log('#########ERROR ANYING###############', err);
 //   }
 
-//   console.log('######################## SERVER');
-
 //   return {
 //     props: { datum }, // will be passed to the page component as props
 //   };
 // }
+
+export async function getServerSideProps(ctx: NextPageContext) {
+  const cookies = nookies.get(ctx);
+  if (!cookies._eduflix) {
+    return { redirect: { destination: '/backoffice/auth', permanent: false } };
+  } else {
+    httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
+  }
+  let datum: any = [];
+  try {
+    const getDetail = await httpService.get(httpService.apiUrl + `question`);
+    if (getDetail.status === 200) {
+      datum = getDetail.data.result.data;
+    } else {
+      datum = [];
+    }
+  } catch (err) {
+    console.log('#########ERROR ANYING###############', err);
+  }
+
+  console.log('######################## SERVER');
+
+  return {
+    props: { datum }, // will be passed to the page component as props
+  };
+}
 
 export default QuestionPage;

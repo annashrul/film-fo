@@ -10,7 +10,7 @@ import Sess from 'lib/auth';
 import { Button, message, Steps } from 'antd';
 import 'antd/dist/antd.css';
 import OTPInput from 'components/Common/Otp';
-import nookies from 'nookies';
+// import nookies from 'nookies';
 
 const { Step } = Steps;
 const steps = [
@@ -134,7 +134,7 @@ const Auth: React.FC<iAuth> = ({ response }) => {
         <div className="relative px-4 ">
           <div className="max-w-md mx-auto">
             <Steps current={current}>
-              {steps.map((item, key) => (
+              {steps.map((_item, key) => (
                 <Step key={key} />
               ))}
             </Steps>

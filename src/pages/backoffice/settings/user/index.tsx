@@ -2,8 +2,10 @@ import React, { useState, useEffect                                             
 import "react-intl-tel-input/dist/main.css";
 import Layout from 'Layouts'
 import Api from 'lib/httpService';
-import Helper from 'lib/helper';
-import {iUser,iPagin} from 'lib/interface';
+// import Helper from 'lib/helper';
+import {
+    // iUser,
+    iPagin} from 'lib/interface';
 import { Pagination } from '@windmill/react-ui'
 import moment from 'moment'
 import nookies from 'nookies'
@@ -11,7 +13,7 @@ import { NextPageContext } from 'next'
 import { handleGet } from "lib/handleAction";
 import DateRangePicker from 'react-bootstrap-daterangepicker';
 import 'bootstrap-daterangepicker/daterangepicker.css';
-import httpService from "lib/httpService";
+// import httpService from "lib/httpService";
 // import Mutasi from 'components/transaksi/mutasi_row'
 
 interface iUserPage {
@@ -20,7 +22,7 @@ interface iUserPage {
 
 
 const UserPage: React.FC<iUserPage> = (datum) =>{
-    const [datumUser,setDatumUser]= useState<Array<iUser>>([]);
+    // const [datumUser,setDatumUser]= useState<Array<iUser>>([]);
     const [arrData, setArrData] = useState<iPagin>();
     const [datefrom,setDatefrom]=useState(moment(new Date()).format("MM/DD/yyyy"));
     const [dateto,setDateto]=useState(moment(new Date()).format("MM/DD/yyyy"));
@@ -28,7 +30,7 @@ const UserPage: React.FC<iUserPage> = (datum) =>{
         const [hitFirst,setHitFirst]=useState(1);
 
     useEffect(() => {
-         setDatumUser(datum.datum.data);
+        //  setDatumUser(datum.datum.data);
         setArrData(datum.datum);
         // handleLoadData(`page=1&datefrom=${datefrom}&dateto=${dateto}&perpage=10`);
     }, []);
@@ -40,7 +42,7 @@ const UserPage: React.FC<iUserPage> = (datum) =>{
             url+=`?${val}`;
         }
         await handleGet(url,(datum)=>{
-            setDatumUser(datum.data);
+            // setDatumUser(datum.data);
             setArrData(datum);
         })
        
@@ -119,25 +121,25 @@ const UserPage: React.FC<iUserPage> = (datum) =>{
                         </thead>
                         <tbody>
                             {
-                            datumUser?.length>0?datumUser.map((item:iUser,i:number)=>{
-                                    return(
-                                    <tr className="bg-gray-700 border-b border-gray-600">
-                                        {/* <td className="px-4 py-4">{item.id}</td> */}
-                                        <td className="px-4 py-4"><button type="button">ACTION</button></td>
-                                        <td className="px-4 py-4">{item.title}</td>
-                                        <td className="px-4 py-4">{item.slug}</td>
-                                        <td className="px-4 py-4">{item.total_tenant}</td>
-                                        <td className="px-4 py-4">{item.total_penonton}</td>
-                                        <td className="px-4 py-4">{item.poster}</td>
-                                        <td className="px-4 py-4">{item.video}</td>
-                                        <td className="px-4 py-4">{item.durasi}</td>
-                                        <td className="px-4 py-4">{item.status}</td>
-                                        <td className="px-4 py-4">{item.category}</td>
-                                        <td className="px-4 py-4">{item.id_category}</td>
-                                        <td className="px-4 py-4">{item.created_at}</td>
-                                    </tr>
-                                    );
-                                }):<tr><td colSpan={12}><img className="w-full" src={`${httpService.noData}`}/></td></tr>
+                            // datumUser?.length>0?datumUser.map((item:iUser,i:number)=>{
+                            //         return(
+                            //         <tr className="bg-gray-700 border-b border-gray-600">
+                            //             {/* <td className="px-4 py-4">{item.id}</td> */}
+                            //             <td className="px-4 py-4"><button type="button">ACTION</button></td>
+                            //             <td className="px-4 py-4">{item.title}</td>
+                            //             <td className="px-4 py-4">{item.slug}</td>
+                            //             <td className="px-4 py-4">{item.total_tenant}</td>
+                            //             <td className="px-4 py-4">{item.total_penonton}</td>
+                            //             <td className="px-4 py-4">{item.poster}</td>
+                            //             <td className="px-4 py-4">{item.video}</td>
+                            //             <td className="px-4 py-4">{item.durasi}</td>
+                            //             <td className="px-4 py-4">{item.status}</td>
+                            //             <td className="px-4 py-4">{item.category}</td>
+                            //             <td className="px-4 py-4">{item.id_category}</td>
+                            //             <td className="px-4 py-4">{item.created_at}</td>
+                            //         </tr>
+                            //         );
+                            //     }):<tr><td colSpan={12}><img className="w-full" src={`${httpService.noData}`}/></td></tr>
                             }
                         </tbody>
                     </table>

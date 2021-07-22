@@ -23,7 +23,7 @@ export const widgetFirst = (
   label: string,
   value: string,
   onChange: (e: any) => void,
-  other: any = '',
+  // other: any = '',
   desc: string = 'anda dapat mengubungi pihak sekolah apabila menemukan kendala',
 ) => {
   return (

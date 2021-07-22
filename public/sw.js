@@ -64,6 +64,12 @@ try {
       );
     }
   });
+  self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'MESSAGE') {
+      // do something
+      console.log(event.data);
+    }
+  });
 } catch (e) {
   console.log(e);
 }
