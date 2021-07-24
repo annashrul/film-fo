@@ -2,7 +2,7 @@ import { setting, dashboard, question, category, project, tenant } from 'icons';
 
 const Routes = [
   {
-    link: '/backoffice',
+    link: '/backoffice/dashboard',
     title: 'Dashboard',
     icon: dashboard,
     routes: [],

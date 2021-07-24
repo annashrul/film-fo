@@ -154,6 +154,11 @@ const Tenant: React.FC<QuizResponse> = ({ data }) => {
                                 ? 'https://i02.appmifile.com/716_bbs_en/17/07/2020/fbfd3d4d29.gif'
                                 : 'https://i.pinimg.com/originals/71/c7/60/71c76025a232b42e8a458ac1656cab65.gif'
                             }`}
+                            alt={`${
+                              helper.nilaiAkhir(nilai)
+                                ? 'https://i02.appmifile.com/716_bbs_en/17/07/2020/fbfd3d4d29.gif'
+                                : 'https://i.pinimg.com/originals/71/c7/60/71c76025a232b42e8a458ac1656cab65.gif'
+                            }`}
                             className="h-20"
                           />
                           nilai kamu : {nilai}

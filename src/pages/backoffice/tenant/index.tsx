@@ -185,7 +185,7 @@ const TenantPage: React.FC<iTenantPage> = (datum) => {
                 ) : (
                   <tr>
                     <td colSpan={12}>
-                      <img className="w-full" src={`${httpService.noData}`} />
+                      <img className="w-full" src={`${httpService.noData}`} alt={`${httpService.noData}`} />
                     </td>
                   </tr>
                 )}

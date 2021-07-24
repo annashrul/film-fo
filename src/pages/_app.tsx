@@ -16,7 +16,6 @@ import { doLogout } from 'lib/auth_bo';
 LogRocket.init('9razfl/eduflix');
 const coo: string = Cookies.get('_eduflix')!;
 if (coo !== undefined) {
-  console.log(coo);
   axios.defaults.headers.common['Authorization'] = atob(coo);
   // cek JWT Token
   const decodedToken: any = jwt_decode(atob(coo));
@@ -41,9 +40,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <Windmill dark>
-      <ToastProvider autoDismiss autoDismissTimeout={2000} placement="bottom-right">
-        <Component {...pageProps} />
-      </ToastProvider>
+      <Component {...pageProps} />
     </Windmill>
   );
 }

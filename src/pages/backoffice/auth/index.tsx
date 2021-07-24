@@ -3,12 +3,9 @@ import { NextPageContext } from 'next';
 import 'react-intl-tel-input/dist/main.css';
 import { NextPage } from 'next';
 import Sess from 'lib/auth_bo';
-import { useToasts } from 'react-toast-notifications';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
-import Auth from 'components/Auth';
-import Layout from 'Layouts';
 import { handlePost } from 'lib/handleAction';
 import { message, Button } from 'antd';
 import 'antd/dist/antd.css';
@@ -20,24 +17,13 @@ interface iLogin {
 }
 const Index: NextPage<iLogin> = ({ otpLength }) => {
   const router = useRouter();
-
-  // const cekSess = Sess.getToken();
-  // cekSess!==undefined&&router.push('/')
-
-  const { addToast } = useToasts();
-  // const [otp, setOtp] = useState('-');
-  // const [counter, setCounter] = React.useState(0);
-  // const [startTimer, setStartTimer] = React.useState(false);
-  // const [otpInput, setOtpInput] = React.useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-
   const handleSubmit = (e: any) => {
-    console.log(e);
     if (!helper.isEmpty(username)) {
       message.error('username tidak boleh kosong');
     } else if (password === '') {
-      Swal.fire('Peringatan', 'Password tidak boleh kosong!');
+      message.error('Password tidak boleh kosong!');
     } else {
       handlePost(
         Sess.http.apiClient + 'auth',
@@ -63,7 +49,7 @@ const Index: NextPage<iLogin> = ({ otpLength }) => {
             });
             Sess.setToken(datum.token);
             Sess.http.axios.defaults.headers.common['Authorization'] = datum.token;
-            router.push('/backoffice/question');
+            router.push('/backoffice/dashboard');
           }
         },
       );
@@ -140,14 +126,14 @@ const Index: NextPage<iLogin> = ({ otpLength }) => {
 export async function getServerSideProps(ctx: NextPageContext) {
   // Parse
   const cookies = nookies.get(ctx);
-  // if (cookies._eduflix !== undefined) {
-  //   return {
-  //     redirect: {
-  //       destination: '/backoffice/question',
-  //       permanent: false,
-  //     },
-  //   };
-  // }
+  if (cookies._eduflix !== undefined) {
+    return {
+      redirect: {
+        destination: '/backoffice/dashboard',
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       cookies,

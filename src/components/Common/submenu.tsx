@@ -82,7 +82,7 @@ const Widget: React.FC<iWidget> = ({ title, icon, routes }) => {
           {routes.map((r) => (
             <li className={path === r.link ? non : aktif} key={r.title}>
               <Link href={r.link}>
-                <a className="w-full">{r.title}</a>
+                <button className="w-full text-left">{r.title}</button>
               </Link>
             </li>
           ))}

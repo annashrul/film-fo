@@ -6,7 +6,7 @@ const coo_bo: string = Cookies.get('_prowara_bo')!;
 if (coo !== undefined) {
   axios.defaults.headers.common['Authorization'] = atob(coo);
   axios.defaults.headers.common['myconnection'] = 'apps';
-} else if(coo_bo !== undefined) {
+} else if (coo_bo !== undefined) {
   axios.defaults.headers.common['Authorization'] = atob(coo_bo);
   axios.defaults.headers.common['myconnection'] = 'backoffice';
 }
@@ -21,6 +21,5 @@ export default {
   // apiClient: "http://192.168.100.10:6704/",
   noData: 'https://www.napro.id/assets/images/placeholder-no-data.png',
   apiUrl: 'http://ptnetindo.com:6701/',
-  // apiUrl: "https://api.prowara.com/",
   apiClient: 'http://ptnetindo.com:6701/',
 };

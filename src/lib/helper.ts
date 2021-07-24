@@ -203,22 +203,12 @@ export const sw = () => {
   return;
 };
 
-var date = new Date();
-date.setDate(date.getDate());
-export const rangeDate = {
-  'Hari Ini': [date.setDate(date.getDate()), moment()],
-  Kemarin: [date.setDate(date.getDate() - 1), date.setDate(date.getDate())],
-  '7 Hari Terakhir': [moment().subtract(7, 'days'), moment()],
-  '30 Hari Terakhir': [moment().subtract(30, 'days'), moment()],
-  'Minggu Ini': [moment().startOf('isoWeek'), moment().endOf('isoWeek')],
-  'Minggu Lalu': [moment().subtract(1, 'weeks').startOf('isoWeek'), moment().subtract(1, 'weeks').endOf('isoWeek')],
-  'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-  'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-  'Tahun Ini': [moment().startOf('year'), moment().endOf('year')],
-  'Tahun Lalu': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+export const generateNo = (i: any, current_page: any, perpage: any = 10) => {
+  return i + 1 + perpage * (parseInt(current_page, 10) - 1);
 };
 
 export default {
+  generateNo,
   sw,
   nilaiAkhir,
   isEmpty,

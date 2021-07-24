@@ -77,6 +77,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openProfile, toggleProfi
               <img
                 className="inline h-6 rounded-full"
                 src={foto === '-' ? 'https://avatars2.githubusercontent.com/u/24622175?s=60&v=4' : foto}
+                alt={foto === '-' ? 'https://avatars2.githubusercontent.com/u/24622175?s=60&v=4' : foto}
               />
               <svg
                 fill="currentColor"
@@ -100,7 +101,10 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openProfile, toggleProfi
               >
                 <li className="flex">
                   <Link href="/profile">
-                    <a className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200">
+                    <a
+                      href="/profile"
+                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                    >
                       <svg
                         className="w-4 h-4 mr-3"
                         aria-hidden="true"

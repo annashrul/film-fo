@@ -1,119 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import Layout from 'Layouts';
 import Api from 'lib/httpService';
 import { iQuestion, iPagin } from 'lib/interface';
-import { Pagination } from '@windmill/react-ui';
-import moment from 'moment';
 import nookies from 'nookies';
-import { NextPageContext } from 'next';
-import { Modal } from 'rsuite';
-
+// import { NextPageContext } from 'next';
 import httpService from 'lib/httpService';
 import { handleGet } from 'lib/handleAction';
-import { Collapse, Select } from 'antd';
-import { ConsoleSqlOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { PlusOutlined, FormOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import helper from 'lib/helper';
-const { Panel } = Collapse;
-const { Option } = Select;
-interface iQuestionPage {
-  datum: any;
-}
+import MPagination from 'components/Common/MPagination';
+// import { GetStaticProps, GetStaticPaths, GetServerSideProps, NextPageContext } from 'next';
+import { NextPage, GetStaticProps } from 'next';
+import useSWR from 'swr';
+import { Spin } from 'antd';
+const fetcher = (url: string) => httpService.get(url);
 
-const QuestionPage: React.FC<iQuestionPage> = (datum) => {
-  const [datumQuestion, setDatumQuestion] = useState<Array<iQuestion>>([]);
-  const [arrData, setArrData] = useState<iPagin>();
-  const [datefrom, setDatefrom] = useState(moment(new Date()).format('MM/DD/yyyy'));
-  const [dateto, setDateto] = useState(moment(new Date()).format('MM/DD/yyyy'));
+const QuestionPage: NextPage = (props) => {
+  const [arrData, setArrData] = useState<Array<iQuestion>>([]);
+  const [pagin, setPagin] = useState<iPagin>();
   const [any, setAny] = useState('');
-  const [hitFirst, setHitFirst] = useState(1);
+  const [numPagin, setNumPagin] = useState(1);
+  const { data, error } = useSWR(httpService.apiClient + `question?page=${numPagin}&perpage=1`, fetcher);
+
+  const handleGets = async (search = '', page = 1) => {
+    // const { data } = useSWR(httpService.apiClient + 'question', fetcher);
+    // console.log('handleget', data);
+    // const { data, error } = useSWR(httpService.apiClient + 'question', fetcher);
+    // console.log(data?.data.result);
+    // setArrData(data?.data.result.data);
+    // let url: string = `question?page=${page}&perpage=10`;
+    // if (search !== '') url += `&q=${search}`;
+    // await handleGet(
+    //   Api.apiClient + url,
+    //   (data: any) => {
+    //     console.log('handle get');
+    //     setArrData(data.data);
+    //     setPagin(data);
+    //   },
+    //   false,
+    // );
+  };
 
   useEffect(() => {
-    console.log('asdasd', datum.datum);
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').then(
-          function (registration) {
-            console.log(registration);
-            console.log('Service Worker registration successful with scope: ', registration.scope);
-          },
-          function (err) {
-            console.log('Service Worker registration failed: ', err);
-          },
-        );
-        navigator.serviceWorker.controller?.postMessage({
-          type: 'POST_MESSAGE',
-        });
-      });
-    }
-
-    setDatumQuestion(datum.datum);
-    setArrData(datum.datum);
-    handleLoadData('');
-    // handleLoadData(`page=1&datefrom=${datefrom}&dateto=${dateto}&perpage=10`);
+    handleGets();
   }, []);
-
-  const handleLoadData = async (val: string) => {
-    let url = Api.apiClient + `question`;
-    if (val !== null) {
-      url += `?${val}`;
-    }
-    // await handleGet(url, (datum) => {
-    //   console.log(datum);
-    //   setDatumQuestion(datum.data);
-    //   setArrData(datum);
-    // });
-  };
-
-  const handleSearch = () => {
-    let where = '';
-    if (any !== '') {
-      where += `&q=${btoa(any)}`;
-    }
-    handleLoadData(`page=1${where}`);
-  };
-  const handlePage = (pagenum: string) => {
-    if (hitFirst === 0) {
-      if (any !== '') {
-        handleLoadData(`page=${pagenum}&q=${btoa(any)}&datefrom=${datefrom}&dateto=${dateto}&perpage=10`);
-      }
-    }
-  };
-  const handleEvent = (event: any, picker: any) => {
-    const from = moment(picker.startDate._d).format('YYYY-MM-DD');
-    const to = moment(picker.endDate._d).format('YYYY-MM-DD');
-    setDatefrom(moment(picker.startDate._d).format('MM/DD/yyyy'));
-    setDateto(moment(picker.endDate._d).format('MM/DD/yyyy'));
-    handleLoadData(`page=1&datefrom=${from}&dateto=${to}&perpage=10`);
-  };
 
   return (
     <Layout title="Question">
       <div className="container mx-auto grid mb-20">
         <div className="flex justify-between">
           <div>
-            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">Question</h2>
+            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">Pertanyaan</h2>
           </div>
         </div>
-        <div className="shadow-md rounded">
+        <div className=" rounded">
           <div className={'mt-4 flex  flex-row'}>
-            <div className="flex relative w-1/4 mr-5">
+            <div className="flex relative lg:w-1/4 sm:w-1/2 mr-5">
               <input
                 className="block w-full mt-1 px-3 text-sm dark:border-gray-600 dark:bg-gray-700 focus:outline-none  dark:text-gray-300"
                 placeholder="Cari disini"
                 value={any}
-                onChange={(event) => setAny(event.target.value)}
-                onKeyPress={(event) => {
-                  if (event.key === 'Enter') {
-                    handleSearch();
-                  }
+                type="search"
+                onChange={(event) => {
+                  event.preventDefault();
+                  // setAny(event.target.value);
                 }}
               />
               <button
                 className="px-8 rounded-r-lg bg-old-gold  text-gray-800 font-bold p-3 mt-1 uppercase border-yellow-500 border-t border-b border-r"
                 onClick={(event) => {
                   event.preventDefault();
-                  handleSearch();
+                  handleGets();
                 }}
               >
                 <svg
@@ -138,7 +96,6 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) => {
               className="px-8 rounded-lg bg-old-gold  text-gray-800 font-bold p-3 mt-1 uppercase border-yellow-500 border-t border-b border-r"
               onClick={(event) => {
                 event.preventDefault();
-                handleSearch();
               }}
             >
               <PlusOutlined style={{ color: 'white', fontSize: '16px' }} />
@@ -149,30 +106,45 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) => {
             <table className="rounded-t-lg m-5 w-full mx-auto bg-gray-800 text-gray-200">
               <thead>
                 <tr className="text-left border-b border-gray-300">
-                  <th className="px-4 py-3">#</th>
-                  <th className="px-4 py-3">slug_project</th>
-                  <th className="px-4 py-3">id_project</th>
-                  <th className="px-4 py-3">question</th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    No
+                  </th>
+
+                  <th className="px-4 py-3">Pertanyaan</th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    #
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {datumQuestion?.length > 0 ? (
-                  datumQuestion.map((item: iQuestion, i: number) => {
+                {error ? (
+                  <div>error</div>
+                ) : !data ? (
+                  <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}></Spin>
+                ) : data?.data.result.data.length > 0 ? (
+                  data?.data.result.data.map((item: iQuestion, i: number) => {
                     return (
-                      <tr className="bg-gray-700 border-b border-gray-600">
-                        <td className="px-4 py-4">
-                          <button type="button">ACTION</button>
-                        </td>
-                        <td className="px-4 py-4">{item.slug_project}</td>
-                        <td className="px-4 py-4">{item.id_project}</td>
+                      <tr className="bg-gray-700 border-b border-gray-600" key={i}>
+                        <td className="px-4 py-4">{helper.generateNo(i, data?.data.result.current_page)}</td>
+
                         <td className="px-4 py-4">{item.question}</td>
+                        <td className="px-4 py-4">
+                          <div className="flex flex-row">
+                            <span className="cursor-pointer">
+                              <FormOutlined style={{ color: 'white', fontSize: '20px', marginRight: '5px' }} />
+                            </span>
+                            <span className="cursor-pointer">
+                              <DeleteOutlined style={{ color: 'white', fontSize: '20px' }} />
+                            </span>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })
                 ) : (
                   <tr>
                     <td colSpan={12}>
-                      <img className="w-full" src={`${httpService.noData}`} />
+                      <img className="w-full" src={`${httpService.noData}`} alt={`${httpService.noData}`} />
                     </td>
                   </tr>
                 )}
@@ -180,70 +152,33 @@ const QuestionPage: React.FC<iQuestionPage> = (datum) => {
             </table>
           </div>
           <br />
-          <Pagination
-            totalResults={arrData === undefined ? 0 : arrData.total}
-            resultsPerPage={arrData === undefined ? 0 : arrData.per_page}
-            onChange={() => {
-              setHitFirst(0);
-              handlePage;
+          <MPagination
+            count={data?.data.result?.per_page}
+            page={numPagin}
+            totalPage={Math.ceil(
+              (data?.data.result === undefined ? 0 : data?.data.result.total) /
+                (data?.data.result === undefined ? 0 : data?.data.result.per_page),
+            )}
+            onNext={() => {
+              console.log('onNext');
+              setNumPagin(numPagin + 1);
+              handleGets(any, numPagin + 1);
             }}
-            label="Page navigation"
+            onPrev={() => {
+              console.log('onPrev');
+              setNumPagin(numPagin - 1);
+              handleGets(any, numPagin - 1);
+            }}
+            handlGotoPage={(pageN) => {
+              console.log('handlGotoPage');
+              setNumPagin(pageN);
+              handleGets(any, pageN);
+            }}
           />
         </div>
       </div>
     </Layout>
   );
 };
-// export async function getStaticProps(ctx: NextPageContext) {
-//   // console.log('######################## SERVER', ctx);
-
-//   // const cookies = nookies.get(ctx);
-//   // if (!cookies._eduflix) {
-//   //   return { redirect: { destination: '/backoffice/auth', permanent: false } };
-//   // } else {
-//   //   httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
-//   // }
-//   let datum: any = [];
-//   try {
-//     const getDetail = await httpService.get(httpService.apiUrl + `question`);
-//     if (getDetail.status === 200) {
-//       datum = getDetail.data.result.data;
-//     } else {
-//       datum = [];
-//     }
-//   } catch (err) {
-//     console.log('#########ERROR ANYING###############', err);
-//   }
-
-//   return {
-//     props: { datum }, // will be passed to the page component as props
-//   };
-// }
-
-export async function getServerSideProps(ctx: NextPageContext) {
-  const cookies = nookies.get(ctx);
-  if (!cookies._eduflix) {
-    return { redirect: { destination: '/backoffice/auth', permanent: false } };
-  } else {
-    httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
-  }
-  let datum: any = [];
-  try {
-    const getDetail = await httpService.get(httpService.apiUrl + `question`);
-    if (getDetail.status === 200) {
-      datum = getDetail.data.result.data;
-    } else {
-      datum = [];
-    }
-  } catch (err) {
-    console.log('#########ERROR ANYING###############', err);
-  }
-
-  console.log('######################## SERVER');
-
-  return {
-    props: { datum }, // will be passed to the page component as props
-  };
-}
 
 export default QuestionPage;

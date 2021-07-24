@@ -63,10 +63,23 @@
 //   server.get('/', (req, res) => {
 //     ssrCache({ req, res });
 //   });
+//   server.get('/backoffice/dashboard', (req, res) => {
+//     return ssrCache({ req, res });
+//   });
 //   server.get('/backoffice/auth', (req, res) => {
 //     return ssrCache({ req, res });
 //   });
 //   server.get('/backoffice/question', (req, res) => {
+//     return ssrCache({ req, res });
+//   });
+//   server.get('/backoffice/tenant', (req, res) => {
+//     return ssrCache({ req, res });
+//   });
+
+//   server.get('/backoffice/project', (req, res) => {
+//     return ssrCache({ req, res });
+//   });
+//   server.get('/backoffice/category', (req, res) => {
 //     return ssrCache({ req, res });
 //   });
 
@@ -181,105 +194,150 @@
 //   });
 // });
 
+// const express = require('express');
+// const next = require('next');
+
+// const isDevEnvironment = process.env.NODE_ENV !== 'production';
+// const nextApp = next({ dev: isDevEnvironment, dir: './src' });
+
+// const defaultRequestHandler = nextApp.getRequestHandler();
+
+// const Keyv = require('keyv');
+// const { resolve: urlResolve } = require('url');
+// const normalizeUrl = require('normalize-url');
+// const cacheableResponse = require('cacheable-response');
+
+// const cacheStore = new Keyv({ namespace: 'ssr-cache' });
+
+// const _getSSRCacheKey = (req) => {
+//   const url = urlResolve('http://localhost', req.url);
+//   const { origin } = new URL(url);
+//   const baseKey = normalizeUrl(url, {
+//     removeQueryParameters: ['embed', 'filter', 'force', 'proxy', 'ref', /^utm_\w+/i],
+//   });
+//   return baseKey.replace(origin, '').replace('/?', '');
+// };
+
+// const cacheManager = cacheableResponse({
+//   ttl: 1000 * 60 * 60, // 1hour
+//   get: async ({ req, res, pagePath, queryParams }) => {
+//     try {
+//       return { data: await nextApp.renderToHTML(req, res, pagePath, queryParams) };
+//     } catch (e) {
+//       return { data: 'error: ' + e };
+//     }
+//   },
+//   send: ({ data, res }) => {
+//     res.send(data);
+//   },
+//   cache: cacheStore,
+//   getKey: _getSSRCacheKey,
+//   compress: true,
+// });
+
+// function clearCompleteCache(res, req) {
+//   cacheStore.clear();
+//   res.status(200);
+//   res.send({
+//     path: req.hostname + req.baseUrl,
+//     purged: true,
+//     clearedCompleteCache: true,
+//   });
+//   res.end();
+// }
+
+// function clearCacheForRequestUrl(req, res) {
+//   let key = _getSSRCacheKey(req);
+//   console.log(key);
+//   cacheStore.delete(key);
+//   res.status(200);
+//   res.send({
+//     path: req.hostname + req.baseUrl + req.path,
+//     key: key,
+//     purged: true,
+//     clearedCompleteCache: false,
+//   });
+//   res.end();
+// }
+
+// nextApp
+//   .prepare()
+//   .then(() => {
+//     const server = express();
+
+//     server.get('/_next/*', (req, res) => {
+//       defaultRequestHandler(req, res);
+//     });
+
+//     server.get('*', (req, res) => {
+//       if (req.query.noCache) {
+//         // isDevEnvironment ||
+//         res.setHeader('X-Cache-Status', 'DISABLED');
+//         defaultRequestHandler(req, res);
+//       } else {
+//         cacheManager({ req, res, pagePath: req.path });
+//       }
+//     });
+
+//     server.purge('*', (req, res) => {
+//       if (req.query.clearCache) {
+//         clearCompleteCache(res, req);
+//       } else {
+//         clearCacheForRequestUrl(req, res);
+//       }
+//     });
+
+//     server.listen(3000, (err) => {
+//       if (err) throw err;
+//       console.log('> Ready on http://localhost:3000');
+//     });
+//   })
+//   .catch((ex) => {
+//     console.error(ex.stack);
+//     process.exit(1);
+//   });
 const express = require('express');
 const next = require('next');
 
-const isDevEnvironment = process.env.NODE_ENV !== 'production';
-const nextApp = next({ dev: isDevEnvironment, dir: './src' });
+const port = parseInt(process.env.PORT, 10) || 3000;
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
+const handle = app.getRequestHandler();
+const { promises } = require('fs');
 
-const defaultRequestHandler = nextApp.getRequestHandler();
+app.prepare().then(() => {
+  const server = express();
 
-const Keyv = require('keyv');
-const { resolve: urlResolve } = require('url');
-const normalizeUrl = require('normalize-url');
-const cacheableResponse = require('cacheable-response');
-
-const cacheStore = new Keyv({ namespace: 'ssr-cache' });
-
-const _getSSRCacheKey = (req) => {
-  const url = urlResolve('http://localhost', req.url);
-  const { origin } = new URL(url);
-  const baseKey = normalizeUrl(url, {
-    removeQueryParameters: ['embed', 'filter', 'force', 'proxy', 'ref', /^utm_\w+/i],
-  });
-  return baseKey.replace(origin, '').replace('/?', '');
-};
-
-const cacheManager = cacheableResponse({
-  ttl: 1000 * 60 * 60, // 1hour
-  get: async ({ req, res, pagePath, queryParams }) => {
-    try {
-      return { data: await nextApp.renderToHTML(req, res, pagePath, queryParams) };
-    } catch (e) {
-      return { data: 'error: ' + e };
+  server.all('*', (req, res) => {
+    const url = new URL(req.url, 'http://localhost:3000/');
+    if (url.pathname.includes('purge-data')) {
+      purgeData(url.pathname.replace('purge-data/', ''), res);
+      res.sendStatus(200);
+      res.json({ acuy: '#####################################' });
+      return res.end();
     }
-  },
-  send: ({ data, res }) => {
-    res.send(data);
-  },
-  cache: cacheStore,
-  getKey: _getSSRCacheKey,
-  compress: true,
+    return handle(req, res);
+  });
+
+  server.listen(port, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://localhost:${port}`);
+  });
 });
 
-function clearCompleteCache(res, req) {
-  cacheStore.clear();
-  res.status(200);
-  res.send({
-    path: req.hostname + req.baseUrl,
-    purged: true,
-    clearedCompleteCache: true,
-  });
-  res.end();
-}
+const purgeData = async (pathname, res) => {
+  const fullPathname = `.next/server/pages${pathname}`;
+  const fullPathHTML = `${fullPathname}.html`;
+  const fullPathJSON = `${fullPathname}.json`;
+  try {
+    const cachedData = await app.server.incrementalCache.get(pathname);
+    const staleTime = new Date().getTime() - 1000;
+    app.server.incrementalCache.del(pathname); //<--- add method 'del' in incrementalCache
+    await promises.unlink(fullPathHTML);
+    await promises.unlink(fullPathJSON);
 
-function clearCacheForRequestUrl(req, res) {
-  let key = _getSSRCacheKey(req);
-  console.log(key);
-  cacheStore.delete(key);
-  res.status(200);
-  res.send({
-    path: req.hostname + req.baseUrl + req.path,
-    key: key,
-    purged: true,
-    clearedCompleteCache: false,
-  });
-  res.end();
-}
-
-nextApp
-  .prepare()
-  .then(() => {
-    const server = express();
-
-    server.get('/_next/*', (req, res) => {
-      defaultRequestHandler(req, res);
-    });
-
-    server.get('*', (req, res) => {
-      if (req.query.noCache) {
-        // isDevEnvironment ||
-        res.setHeader('X-Cache-Status', 'DISABLED');
-        defaultRequestHandler(req, res);
-      } else {
-        cacheManager({ req, res, pagePath: req.path });
-      }
-    });
-
-    server.purge('*', (req, res) => {
-      if (req.query.clearCache) {
-        clearCompleteCache(res, req);
-      } else {
-        clearCacheForRequestUrl(req, res);
-      }
-    });
-
-    server.listen(3000, (err) => {
-      if (err) throw err;
-      console.log('> Ready on http://localhost:3000');
-    });
-  })
-  .catch((ex) => {
-    console.error(ex.stack);
-    process.exit(1);
-  });
+    console.log(`Cache of ${fullPathname} was successfully purged`);
+  } catch (err) {
+    console.error(`Could not purge cache of ${fullPathname} - ${err}`);
+  }
+};

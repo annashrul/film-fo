@@ -14,36 +14,30 @@ import 'bootstrap-daterangepicker/daterangepicker.css';
 import httpService from 'lib/httpService';
 // import Mutasi from 'components/transaksi/mutasi_row'
 
-const CategoryPage: React.FC = (props) => {
-  console.log(props);
+const CategoryPage: React.FC = ({ time }) => {
   return (
     <Layout title="Category">
       <div className="container xs:mx-auto grid mb-20">
         <div className="flex justify-between">
           <div>
-            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">Category</h2>
+            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">
+              Category {time}
+            </h2>
           </div>
         </div>
       </div>
     </Layout>
   );
 };
-export async function getStaticProps() {
-  // Get external data from the file system, API, DB, etc.
+export async function getServerSideProps(ctx: NextPageContext) {
+  console.log('request', ctx);
 
-  // The value of the `props` key will be
-  //  passed to the `Home` component
-  console.log('getStaticProps');
+  // res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+
   return {
-    props: { getStaticProps: 'blablabla' },
+    props: {
+      time: new Date().toISOString(),
+    },
   };
 }
-
-// export async function getServerSideProps(ctx: NextPageContext) {
-//   console.log('getServerSideProps');
-//   return {
-//     props: { getServerSideProps: 'blablabla' },
-//   };
-// }
-
 export default CategoryPage;

@@ -9,6 +9,7 @@ export const widgetHeader = (title = 'selamat datang di', desc = '') => {
       </div>
       <div className="flex items-center justify-center">
         <img
+          alt="https://rekreartive.com/wp-content/uploads/2019/04/Logo-Tut-Wuri-Handayani-PNG-Warna.png"
           className="h-8 mr-3 text-center"
           src="https://rekreartive.com/wp-content/uploads/2019/04/Logo-Tut-Wuri-Handayani-PNG-Warna.png"
         />
