@@ -6,12 +6,13 @@ import '../styles/font-awesome.min.css';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
 import { Windmill } from '@windmill/react-ui';
-import { ToastProvider } from 'react-toast-notifications';
+import { SWRConfig } from 'swr';
 import axios from 'axios';
 import LogRocket from 'logrocket';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { doLogout } from 'lib/auth_bo';
+import httpService from 'lib/httpService';
 
 LogRocket.init('9razfl/eduflix');
 const coo: string = Cookies.get('_eduflix')!;
@@ -36,11 +37,13 @@ axios.defaults.headers.common['Content-Type'] = `application/x-www-form-urlencod
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
-
+const fetcher = (url: string) => httpService.get(url);
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
-    <Windmill dark>
-      <Component {...pageProps} />
-    </Windmill>
+    <SWRConfig value={{ fetcher }}>
+      <Windmill dark>
+        <Component {...pageProps} />
+      </Windmill>
+    </SWRConfig>
   );
 }

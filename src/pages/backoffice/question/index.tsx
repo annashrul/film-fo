@@ -1,51 +1,20 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from 'Layouts';
-import Api from 'lib/httpService';
-import { iQuestion, iPagin } from 'lib/interface';
-import nookies from 'nookies';
-// import { NextPageContext } from 'next';
+import { iQuestion } from 'lib/interface';
 import httpService from 'lib/httpService';
-import { handleGet } from 'lib/handleAction';
-import { PlusOutlined, FormOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
+import { PlusOutlined, FormOutlined, DeleteOutlined, DownSquareOutlined } from '@ant-design/icons';
 import helper from 'lib/helper';
 import MPagination from 'components/Common/MPagination';
-// import { GetStaticProps, GetStaticPaths, GetServerSideProps, NextPageContext } from 'next';
-import { NextPage, GetStaticProps } from 'next';
+import { NextPage } from 'next';
 import useSWR from 'swr';
-import { Spin } from 'antd';
-const fetcher = (url: string) => httpService.get(url);
+import 'antd/dist/antd.css';
 
-const QuestionPage: NextPage = (props) => {
-  const [arrData, setArrData] = useState<Array<iQuestion>>([]);
-  const [pagin, setPagin] = useState<iPagin>();
+const QuestionPage: NextPage = () => {
   const [any, setAny] = useState('');
   const [numPagin, setNumPagin] = useState(1);
-  const { data, error } = useSWR(httpService.apiClient + `question?page=${numPagin}&perpage=1`, fetcher);
-
-  const handleGets = async (search = '', page = 1) => {
-    // const { data } = useSWR(httpService.apiClient + 'question', fetcher);
-    // console.log('handleget', data);
-    // const { data, error } = useSWR(httpService.apiClient + 'question', fetcher);
-    // console.log(data?.data.result);
-    // setArrData(data?.data.result.data);
-    // let url: string = `question?page=${page}&perpage=10`;
-    // if (search !== '') url += `&q=${search}`;
-    // await handleGet(
-    //   Api.apiClient + url,
-    //   (data: any) => {
-    //     console.log('handle get');
-    //     setArrData(data.data);
-    //     setPagin(data);
-    //   },
-    //   false,
-    // );
-  };
-
-  useEffect(() => {
-    handleGets();
-  }, []);
-
+  let url = httpService.apiClient + `question?page=${numPagin}&perpage=10`;
+  if (any !== '') url += `&q=${any}`;
+  const { data, error } = useSWR(url);
   return (
     <Layout title="Question">
       <div className="container mx-auto grid mb-20">
@@ -64,14 +33,14 @@ const QuestionPage: NextPage = (props) => {
                 type="search"
                 onChange={(event) => {
                   event.preventDefault();
-                  // setAny(event.target.value);
+                  setAny(event.target.value);
                 }}
               />
               <button
                 className="px-8 rounded-r-lg bg-old-gold  text-gray-800 font-bold p-3 mt-1 uppercase border-yellow-500 border-t border-b border-r"
                 onClick={(event) => {
                   event.preventDefault();
-                  handleGets();
+                  setAny(any);
                 }}
               >
                 <svg
@@ -111,16 +80,18 @@ const QuestionPage: NextPage = (props) => {
                   </th>
 
                   <th className="px-4 py-3">Pertanyaan</th>
-                  <th className="px-4 py-3" style={{ width: '1%' }}>
-                    #
-                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}></th>
                 </tr>
               </thead>
               <tbody>
                 {error ? (
                   <div>error</div>
                 ) : !data ? (
-                  <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}></Spin>
+                  <tr>
+                    <td className="px-4 py-4" colSpan={3}>
+                      tunggu sebentar ..
+                    </td>
+                  </tr>
                 ) : data?.data.result.data.length > 0 ? (
                   data?.data.result.data.map((item: iQuestion, i: number) => {
                     return (
@@ -131,8 +102,12 @@ const QuestionPage: NextPage = (props) => {
                         <td className="px-4 py-4">
                           <div className="flex flex-row">
                             <span className="cursor-pointer">
-                              <FormOutlined style={{ color: 'white', fontSize: '20px', marginRight: '5px' }} />
+                              <DownSquareOutlined style={{ color: 'white', fontSize: '20px', marginRight: '10px' }} />
                             </span>
+                            <span className="cursor-pointer">
+                              <FormOutlined style={{ color: 'white', fontSize: '20px', marginRight: '10px' }} />
+                            </span>
+
                             <span className="cursor-pointer">
                               <DeleteOutlined style={{ color: 'white', fontSize: '20px' }} />
                             </span>
@@ -159,21 +134,9 @@ const QuestionPage: NextPage = (props) => {
               (data?.data.result === undefined ? 0 : data?.data.result.total) /
                 (data?.data.result === undefined ? 0 : data?.data.result.per_page),
             )}
-            onNext={() => {
-              console.log('onNext');
-              setNumPagin(numPagin + 1);
-              handleGets(any, numPagin + 1);
-            }}
-            onPrev={() => {
-              console.log('onPrev');
-              setNumPagin(numPagin - 1);
-              handleGets(any, numPagin - 1);
-            }}
-            handlGotoPage={(pageN) => {
-              console.log('handlGotoPage');
-              setNumPagin(pageN);
-              handleGets(any, pageN);
-            }}
+            onNext={() => setNumPagin(numPagin + 1)}
+            onPrev={() => setNumPagin(numPagin - 1)}
+            handlGotoPage={(pageN) => setNumPagin(pageN)}
           />
         </div>
       </div>

@@ -1,50 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from 'Layouts';
-import Api from 'lib/httpService';
-import { iQuestion, iPagin } from 'lib/interface';
-import nookies from 'nookies';
-import { NextPageContext } from 'next';
+import { iProject } from 'lib/interface';
 import httpService from 'lib/httpService';
-import { handleGet } from 'lib/handleAction';
-import { PlusOutlined, FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import 'antd/dist/antd.css';
+import { PlusOutlined, FormOutlined, DeleteOutlined, DownSquareOutlined } from '@ant-design/icons';
 import helper from 'lib/helper';
 import MPagination from 'components/Common/MPagination';
+import { NextPage } from 'next';
+import useSWR from 'swr';
+import 'antd/dist/antd.css';
 
-interface iProject {
-  datum: any;
-}
-
-const Project: React.FC<iProject> = (datum) => {
-  const [data, setData] = useState<Array<iQuestion>>(datum.datum.data);
-  const [pagin, setPagin] = useState<iPagin>(datum.datum);
+const ProjectPage: NextPage = () => {
   const [any, setAny] = useState('');
   const [numPagin, setNumPagin] = useState(1);
-
-  const handleGets = async () => {
-    let url: string = `question?page=${numPagin}`;
-    if (any !== '') url += `&q=${any}`;
-    await handleGet(
-      Api.apiClient + url,
-      (data: any) => {
-        console.log('handle get');
-        setData(data.data);
-        setPagin(data);
-      },
-      false,
-    );
-  };
-
-  useEffect(() => {
-    handleGets();
-  }, [any, numPagin]);
-
+  let url = httpService.apiClient + `project?page=${numPagin}&perpage=10`;
+  if (any !== '') url += `&q=${any}`;
+  const { data, error } = useSWR(url);
   return (
-    <Layout title="Question">
+    <Layout title="Project">
       <div className="container mx-auto grid mb-20">
         <div className="flex justify-between">
           <div>
-            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">Pertanyaan</h2>
+            <h2 className="mt-6 text-2xl align-middle font-semibold text-gray-700 dark:text-gray-200">Project</h2>
           </div>
         </div>
         <div className=" rounded">
@@ -57,14 +33,14 @@ const Project: React.FC<iProject> = (datum) => {
                 type="search"
                 onChange={(event) => {
                   event.preventDefault();
-                  // setAny(event.target.value);
+                  setAny(event.target.value);
                 }}
               />
               <button
                 className="px-8 rounded-r-lg bg-old-gold  text-gray-800 font-bold p-3 mt-1 uppercase border-yellow-500 border-t border-b border-r"
                 onClick={(event) => {
                   event.preventDefault();
-                  handleGets();
+                  setAny(any);
                 }}
               >
                 <svg
@@ -102,26 +78,59 @@ const Project: React.FC<iProject> = (datum) => {
                   <th className="px-4 py-3" style={{ width: '1%' }}>
                     No
                   </th>
-
-                  <th className="px-4 py-3">Pertanyaan</th>
+                  <th className="px-4 py-3">Title</th>
                   <th className="px-4 py-3" style={{ width: '1%' }}>
-                    #
+                    Poster
                   </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    Video
+                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    Durasi
+                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    Tenant
+                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    Penonton
+                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}>
+                    Kategori
+                  </th>
+                  <th className="px-4 py-3" style={{ width: '1%' }}></th>
                 </tr>
               </thead>
               <tbody>
-                {data?.length > 0 ? (
-                  data.map((item: iQuestion, i: number) => {
+                {error ? (
+                  <div>error</div>
+                ) : !data ? (
+                  <tr>
+                    <td className="px-4 py-4" colSpan={3}>
+                      tunggu sebentar ..
+                    </td>
+                  </tr>
+                ) : data?.data.result.data.length > 0 ? (
+                  data?.data.result.data.map((item: iProject, i: number) => {
                     return (
                       <tr className="bg-gray-700 border-b border-gray-600" key={i}>
-                        <td className="px-4 py-4">{helper.generateNo(i, pagin?.current_page)}</td>
+                        <td className="px-4 py-4">{helper.generateNo(i, data?.data.result.current_page)}</td>
 
-                        <td className="px-4 py-4">{item.question}</td>
+                        <td className="px-4 py-4">{item.title}</td>
+                        <td className="px-4 py-4">{item.poster}</td>
+                        <td className="px-4 py-4">{item.video}</td>
+                        <td className="px-4 py-4">{item.durasi}</td>
+                        <td className="px-4 py-4">{item.category}</td>
+                        <td className="px-4 py-4 text-right">{item.total_tenant}</td>
+                        <td className="px-4 py-4 text-right">{item.total_penonton}</td>
                         <td className="px-4 py-4">
                           <div className="flex flex-row">
                             <span className="cursor-pointer">
-                              <FormOutlined style={{ color: 'white', fontSize: '20px', marginRight: '5px' }} />
+                              <DownSquareOutlined style={{ color: 'white', fontSize: '20px', marginRight: '10px' }} />
                             </span>
+                            <span className="cursor-pointer">
+                              <FormOutlined style={{ color: 'white', fontSize: '20px', marginRight: '10px' }} />
+                            </span>
+
                             <span className="cursor-pointer">
                               <DeleteOutlined style={{ color: 'white', fontSize: '20px' }} />
                             </span>
@@ -133,7 +142,7 @@ const Project: React.FC<iProject> = (datum) => {
                 ) : (
                   <tr>
                     <td colSpan={12}>
-                      <img className="w-full" src={`${httpService.noData}`} />
+                      <img className="w-full" src={`${httpService.noData}`} alt={`${httpService.noData}`} />
                     </td>
                   </tr>
                 )}
@@ -142,21 +151,15 @@ const Project: React.FC<iProject> = (datum) => {
           </div>
           <br />
           <MPagination
-            count={pagin?.per_page}
+            count={data?.data.result?.per_page}
             page={numPagin}
-            totalPage={Math.ceil((pagin === undefined ? 0 : pagin.total) / (pagin === undefined ? 0 : pagin.per_page))}
-            onNext={() => {
-              console.log('onNext');
-              setNumPagin(numPagin + 1);
-            }}
-            onPrev={() => {
-              console.log('onPrev');
-              setNumPagin(numPagin - 1);
-            }}
-            handlGotoPage={(pageN) => {
-              console.log('handlGotoPage');
-              setNumPagin(pageN);
-            }}
+            totalPage={Math.ceil(
+              (data?.data.result === undefined ? 0 : data?.data.result.total) /
+                (data?.data.result === undefined ? 0 : data?.data.result.per_page),
+            )}
+            onNext={() => setNumPagin(numPagin + 1)}
+            onPrev={() => setNumPagin(numPagin - 1)}
+            handlGotoPage={(pageN) => setNumPagin(pageN)}
           />
         </div>
       </div>
@@ -164,29 +167,4 @@ const Project: React.FC<iProject> = (datum) => {
   );
 };
 
-export async function getServerSideProps(ctx: NextPageContext) {
-  const cookies = nookies.get(ctx);
-  if (!cookies._eduflix) {
-    return { redirect: { destination: '/backoffice/auth', permanent: false } };
-  } else {
-    httpService.axios.defaults.headers.common['Authorization'] = helper.decode(cookies._eduflix);
-  }
-  let datum: any = [];
-
-  try {
-    const getDetail = await httpService.get(httpService.apiUrl + `question`);
-    if (getDetail.status === 200) {
-      datum = getDetail.data.result;
-    } else {
-      datum = [];
-    }
-  } catch (err) {
-    console.log('#########ERROR ANYING###############', err);
-  }
-
-  return {
-    props: { datum }, // will be passed to the page component as props
-  };
-}
-
-export default Project;
+export default ProjectPage;
