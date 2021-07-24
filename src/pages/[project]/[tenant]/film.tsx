@@ -1,5 +1,5 @@
 import { VideoPlayer } from 'components/videoComponent';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 // import ReactPlayer from 'react-player';
 // import helper from 'lib/helper';
 // import { useRouter } from 'next/router';

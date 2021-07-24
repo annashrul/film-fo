@@ -6,7 +6,6 @@ import 'antd/dist/antd.css';
 import helper from 'lib/helper';
 import httpService from 'lib/httpService';
 import nookies from 'nookies';
-import { handleGet } from 'lib/handleAction';
 
 export type QuizResponse = {
   data: any;

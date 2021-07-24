@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import SEO, { SEOProps } from 'components/SEO';
+import React, { useState } from 'react';
+import { SEOProps } from 'components/SEO';
+import dynamic from 'next/dynamic';
+const Header = dynamic(() => import('./Header'), { ssr: false });
+const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false });
+const SEO = dynamic(() => import('components/SEO'), { ssr: false });
 
 const LayoutPage: React.FC<SEOProps> = ({ children, ...rest }) => {
   const [open, setOpen] = useState(false);

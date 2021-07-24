@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NextPageContext } from 'next';
 import 'react-intl-tel-input/dist/main.css';
 import { NextPage } from 'next';
 import Sess from 'lib/auth_bo';
-import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
 import nookies from 'nookies';
 import { handlePost } from 'lib/handleAction';
 import { message, Button } from 'antd';
 import 'antd/dist/antd.css';
 import helper from 'lib/helper';
+
 interface iLogin {
-  // any modifications to the default context, e.g. query types
   apiUrl: string;
   otpLength: number;
 }
-const Index: NextPage<iLogin> = ({ otpLength }) => {
+const Index: NextPage<iLogin> = () => {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const handleSubmit = (e: any) => {
+    console.log(e);
     if (!helper.isEmpty(username)) {
       message.error('username tidak boleh kosong');
     } else if (password === '') {

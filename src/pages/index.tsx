@@ -1,4 +1,3 @@
-import { NextPageContext } from 'next';
 import React from 'react';
 
 const Dashboard: React.FC = () => {
@@ -9,9 +8,5 @@ const Dashboard: React.FC = () => {
     />
   );
 };
-
-export async function getServerSideProps(ctx: NextPageContext) {
-  return { props: {} };
-}
 
 export default Dashboard;

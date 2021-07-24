@@ -1,8 +1,9 @@
 import React from 'react';
 import Route from './routes';
-import Menu from 'components/Common/menu';
-import SubMenu from 'components/Common/submenu';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+const Menu = dynamic(() => import('components/Common/menu'), { ssr: false });
+const SubMenu = dynamic(() => import('components/Common/submenu'), { ssr: false });
 
 interface iSidebar {
   isOpen: Boolean;

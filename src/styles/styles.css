@@ -73,6 +73,9 @@ html::-webkit-scrollbar-thumb {
 html::-webkit-scrollbar-track {
   background: linear-gradient(90deg, #434343, #434343 1px, #111 0, #111) !important;
 }
+.ant-breadcrumb-separator {
+  color: rgba(158, 158, 158, 1) !important;
+}
 /* .ant-collapse .ant-collapse-icon-position-left {
   background-color: transparent !important;
 } */

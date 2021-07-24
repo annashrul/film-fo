@@ -2,15 +2,15 @@ import { NextPageContext } from 'next';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import helper from 'lib/helper';
-import { handleGet, handlePost } from 'lib/handleAction';
+import { handlePost } from 'lib/handleAction';
 import httpService from 'lib/httpService';
 import { iTenant, iUser } from 'lib/interface';
 import { widgetFirst, widgetHeader, widgetTwo } from 'components/tenant/tenantCommon';
 import Sess from 'lib/auth';
 import { Button, message, Steps } from 'antd';
 import 'antd/dist/antd.css';
-import OTPInput from 'components/Common/Otp';
-// import nookies from 'nookies';
+import dynamic from 'next/dynamic';
+const OTPInput = dynamic(() => import('components/Common/Otp'), { ssr: false });
 
 const { Step } = Steps;
 const steps = [

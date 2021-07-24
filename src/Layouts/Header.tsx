@@ -2,9 +2,6 @@ import React from 'react';
 import { doLogout } from 'lib/auth';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { iUser } from 'lib/interface';
-import Cookies from 'js-cookie';
-import { useEffect } from 'react';
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -14,15 +11,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar, openProfile, toggleProfile }) => {
   const router = useRouter();
-  const [nama, setNama] = React.useState('-');
-  const [foto, setFoto] = React.useState('-');
-  // useEffect(() => {
-  //   const coo: string=Cookies.get('__uid')!;
-  //   const datum:iUser= JSON.parse(atob(coo));
-  //   setNama(datum.fullname)
-  //   setFoto(datum.foto)
 
-  // }, []);
   const actLogout = () => {
     doLogout();
     router.push('/backoffice/auth');
@@ -73,12 +62,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openProfile, toggleProfi
                 toggleProfile(!openProfile);
               }}
             >
-              <span>{nama}</span>
-              <img
-                className="inline h-6 rounded-full"
-                src={foto === '-' ? 'https://avatars2.githubusercontent.com/u/24622175?s=60&v=4' : foto}
-                alt={foto === '-' ? 'https://avatars2.githubusercontent.com/u/24622175?s=60&v=4' : foto}
-              />
+              <span>nama</span>
+              <img className="inline h-6 rounded-full" src={'/logo.png'} alt="-" />
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
